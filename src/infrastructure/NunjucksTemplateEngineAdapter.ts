@@ -8,7 +8,7 @@ export class NunjucksTemplateEngine implements TemplateEngine {
         this.env = new nunjucks.Environment();
     }
 
-    render(template: string, variables: Record<string, any>): string {
+    public render(template: string, variables: Record<string, any>): string {
         return this.env.renderString(template, variables);
     }
 } 

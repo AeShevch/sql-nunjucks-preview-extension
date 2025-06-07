@@ -10,14 +10,14 @@ export interface SqlRenderStrategy {
 export class IncludeOnlyStrategy implements SqlRenderStrategy {
     constructor(private includeResolver: IncludeResolver) {}
 
-    render(document: SqlDocument): RenderResult {
+    public render(document: SqlDocument): RenderResult {
         try {
             const content = this.includeResolver.resolve(document.fileName, document.content);
             return { content };
         } catch (error) {
             return { 
                 content: '', 
-                error: error instanceof Error ? error.message : 'Неизвестная ошибка'
+                error: error instanceof Error ? error.message : 'Unknown error'
             };
         }
     }
@@ -29,7 +29,7 @@ export class FullRenderStrategy implements SqlRenderStrategy {
         private templateRenderer: TemplateRenderer
     ) {}
 
-    render(document: SqlDocument, variables: Record<string, any> = {}): RenderResult {
+    public render(document: SqlDocument, variables: Record<string, any> = {}): RenderResult {
         try {
             const processedSql = this.includeResolver.resolve(document.fileName, document.content);
             const renderedSql = this.templateRenderer.render(processedSql, variables);
@@ -37,7 +37,7 @@ export class FullRenderStrategy implements SqlRenderStrategy {
         } catch (error) {
             return { 
                 content: '', 
-                error: error instanceof Error ? error.message : 'Неизвестная ошибка'
+                error: error instanceof Error ? error.message : 'Unknown error'
             };
         }
     }
@@ -55,10 +55,10 @@ export class SqlProcessor {
         this.strategies.set(RenderStrategy.FULL_RENDER, new FullRenderStrategy(includeResolver, templateRenderer));
     }
 
-    process(document: SqlDocument, strategy: RenderStrategy, variables?: Record<string, any>): RenderResult {
+    public process(document: SqlDocument, strategy: RenderStrategy, variables?: Record<string, any>): RenderResult {
         const renderStrategy = this.strategies.get(strategy);
         if (!renderStrategy) {
-            return { content: '', error: `Неизвестная стратегия рендеринга: ${strategy}` };
+            return { content: '', error: `Unknown render strategy: ${strategy}` };
         }
 
         return renderStrategy.render(document, variables);

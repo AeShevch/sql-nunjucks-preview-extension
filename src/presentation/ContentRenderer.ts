@@ -1,20 +1,20 @@
 import * as path from 'path';
 import { ContentRenderer, PreviewOptions } from '@types';
-import { injectable } from 'tsyringe';
+import { injectable, singleton } from 'tsyringe';
 
-@injectable()
+@singleton()
 export class HtmlContentRenderer implements ContentRenderer {
-    renderPreview(sql: string, fileName: string, options: PreviewOptions): string {
+    public renderPreview(sql: string, fileName: string, options: PreviewOptions): string {
         const variablesSection = options.variables ? `
             <div class="variables-section">
-                <h3>Переменные для рендеринга:</h3>
+                <h3>Template Variables:</h3>
                 <pre><code>${JSON.stringify(options.variables, null, 2)}</code></pre>
             </div>
         ` : '';
 
         return `
         <!DOCTYPE html>
-        <html lang="ru">
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,9 +26,9 @@ export class HtmlContentRenderer implements ContentRenderer {
         <body>
             <div class="header">
                 <h1>${options.isFullRender ? '🔧 SQL Full Render' : '📋 SQL Preview'} - ${fileName}</h1>
-                <p>${options.isFullRender ? 'Полностью обработанный SQL с подставленными переменными' : 'SQL с развернутыми включениями'}</p>
+                <p>${options.isFullRender ? 'Fully processed SQL with substituted variables' : 'SQL with expanded includes'}</p>
                 <div class="auto-update-indicator">
-                    <small>🔄 Автоматически обновляется при изменении файла</small>
+                    <small>🔄 Auto-updates when file changes</small>
                 </div>
             </div>
             ${variablesSection}
@@ -38,14 +38,14 @@ export class HtmlContentRenderer implements ContentRenderer {
         `;
     }
 
-    renderError(error: string): string {
+    public renderError(error: string): string {
         return `
         <!DOCTYPE html>
-        <html lang="ru">
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Ошибка</title>
+            <title>Error</title>
             <style>
                 body {
                     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -64,7 +64,7 @@ export class HtmlContentRenderer implements ContentRenderer {
         </head>
         <body>
             <div class="error">
-                <h2>❌ Ошибка обработки SQL</h2>
+                <h2>❌ SQL Processing Error</h2>
                 <p>${error}</p>
             </div>
         </body>

@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import { TemplateVariableProvider } from '@application/SqlPreviewApplicationService';
 
 export class VsCodeTemplateVariableProvider implements TemplateVariableProvider {
-    async getVariables(): Promise<Record<string, any> | undefined> {
+    public async getVariables(): Promise<Record<string, any> | undefined> {
         const input = await vscode.window.showInputBox({
-            prompt: 'Введите переменные для рендеринга в формате JSON',
+            prompt: 'Enter template variables in JSON format',
             placeHolder: '{"companyCurrency": "USD", "startTime": "2024-01-01", "endTime": "2024-12-31", "timezone": "UTC", "dataPoint": "charge"}',
             value: '{"companyCurrency": "USD", "startTime": "2024-01-01", "endTime": "2024-12-31", "timezone": "UTC", "dataPoint": "charge"}',
         });
@@ -16,7 +16,7 @@ export class VsCodeTemplateVariableProvider implements TemplateVariableProvider 
         try {
             return JSON.parse(input);
         } catch (error) {
-            vscode.window.showErrorMessage('Неверный формат JSON');
+            vscode.window.showErrorMessage('Invalid JSON format');
             return undefined;
         }
     }

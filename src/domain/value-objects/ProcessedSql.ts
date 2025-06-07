@@ -5,27 +5,27 @@ export class ProcessedSql {
         private readonly processingSteps: string[] = []
     ) {
         if (!content.trim()) {
-            throw new Error('Обработанный SQL не может быть пустым');
+            throw new Error('Processed SQL cannot be empty');
         }
     }
 
-    get sqlContent(): string {
+    public get sqlContent(): string {
         return this.content;
     }
 
-    get usedVariables(): Record<string, any> | undefined {
+    public get usedVariables(): Record<string, any> | undefined {
         return this.variables ? { ...this.variables } : undefined;
     }
 
-    get processingHistory(): readonly string[] {
+    public get processingHistory(): readonly string[] {
         return [...this.processingSteps];
     }
 
-    hasVariables(): boolean {
+    public hasVariables(): boolean {
         return this.variables !== undefined && Object.keys(this.variables).length > 0;
     }
 
-    withAdditionalProcessingStep(step: string): ProcessedSql {
+    public withAdditionalProcessingStep(step: string): ProcessedSql {
         return new ProcessedSql(
             this.content,
             this.variables,
@@ -33,11 +33,11 @@ export class ProcessedSql {
         );
     }
 
-    static fromContent(content: string): ProcessedSql {
+    public static fromContent(content: string): ProcessedSql {
         return new ProcessedSql(content);
     }
 
-    static fromTemplateRender(content: string, variables: Record<string, any>): ProcessedSql {
+    public static fromTemplateRender(content: string, variables: Record<string, any>): ProcessedSql {
         return new ProcessedSql(content, variables, ['template-rendered']);
     }
 } 

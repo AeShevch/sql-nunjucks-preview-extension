@@ -1,6 +1,6 @@
 import { SqlDocument } from '@domain/entities/SqlDocument';
 import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
-import { PreviewConfiguration, PreviewType } from '@domain/value-objects/PreviewConfiguration';
+import { PreviewConfiguration } from '@domain/value-objects/PreviewConfiguration';
 import { SqlFileIncludeService } from '@domain/services/SqlFileIncludeService';
 import { SqlTemplateRenderingService } from '@domain/services/SqlTemplateRenderingService';
 
@@ -23,7 +23,7 @@ export class SqlPreviewApplicationService {
         private readonly variableProvider: TemplateVariableProvider
     ) {}
 
-    async showIncludePreview(document: SqlDocument): Promise<void> {
+    public async showIncludePreview(document: SqlDocument): Promise<void> {
         try {
             const config = PreviewConfiguration.includeExpansionOnly();
             this.previewDisplay.showPreview(document, config, ProcessedSql.fromContent(''));
@@ -32,12 +32,12 @@ export class SqlPreviewApplicationService {
             this.previewDisplay.updatePreview(document, config, processedSql);
         } catch (error) {
             const config = PreviewConfiguration.includeExpansionOnly();
-            const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.previewDisplay.showError(document, config, errorMessage);
         }
     }
 
-    async showFullTemplatePreview(document: SqlDocument): Promise<void> {
+    public async showFullTemplatePreview(document: SqlDocument): Promise<void> {
         await this.showIncludePreview(document);
 
         const variables = await this.variableProvider.getVariables();
@@ -57,24 +57,24 @@ export class SqlPreviewApplicationService {
             this.previewDisplay.updatePreview(document, config, fullyProcessed);
         } catch (error) {
             const config = PreviewConfiguration.fullTemplateRender(variables);
-            const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.previewDisplay.showError(document, config, errorMessage);
         }
     }
 
-    updateExistingPreviews(document: SqlDocument): void {
+    public updateExistingPreviews(document: SqlDocument): void {
         try {
             const includeConfig = PreviewConfiguration.includeExpansionOnly();
             const processedSql = this.includeService.expandIncludes(document);
             this.previewDisplay.updatePreview(document, includeConfig, processedSql);
         } catch (error) {
             const includeConfig = PreviewConfiguration.includeExpansionOnly();
-            const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             this.previewDisplay.showError(document, includeConfig, errorMessage);
         }
     }
 
-    dispose(): void {
+    public dispose(): void {
         this.previewDisplay.dispose();
     }
 } 

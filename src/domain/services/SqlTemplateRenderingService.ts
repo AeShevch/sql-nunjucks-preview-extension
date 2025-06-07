@@ -7,7 +7,7 @@ export interface TemplateEngine {
 export class SqlTemplateRenderingService {
     constructor(private readonly templateEngine: TemplateEngine) {}
 
-    renderTemplate(processedSql: ProcessedSql, variables: Record<string, any>): ProcessedSql {
+    public renderTemplate(processedSql: ProcessedSql, variables: Record<string, any>): ProcessedSql {
         try {
             const renderedContent = this.templateEngine.render(
                 processedSql.sqlContent, 
@@ -17,19 +17,19 @@ export class SqlTemplateRenderingService {
             return ProcessedSql.fromTemplateRender(renderedContent, variables)
                 .withAdditionalProcessingStep('template-rendered');
         } catch (error) {
-            throw new Error(`Ошибка рендеринга шаблона: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+            throw new Error(`Template rendering error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 
-    validateVariables(variables: Record<string, any>): void {
+    public validateVariables(variables: Record<string, any>): void {
         if (!variables || Object.keys(variables).length === 0) {
-            throw new Error('Переменные для рендеринга не могут быть пустыми');
+            throw new Error('Template variables cannot be empty');
         }
 
         try {
             JSON.stringify(variables);
         } catch (error) {
-            throw new Error('Переменные должны быть сериализуемыми в JSON');
+            throw new Error('Variables must be JSON serializable');
         }
     }
 } 

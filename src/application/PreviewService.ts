@@ -1,10 +1,10 @@
 import { SqlDocument, PreviewOptions, RenderStrategy, VariableProvider } from '@types';
 import { SqlProcessor } from '@domain/SqlProcessor';
 import { VsCodeWebViewManager } from '@presentation/WebViewManager';
-import { injectable, inject } from 'tsyringe';
+import { injectable, inject, singleton } from 'tsyringe';
 import { VsCodeVariableProvider } from '@infrastructure/VsCodeVariableProvider';
 
-@injectable()
+@singleton()
 export class PreviewService {
     constructor(
         @inject(SqlProcessor) private sqlProcessor: SqlProcessor,
@@ -12,7 +12,7 @@ export class PreviewService {
         @inject(VsCodeVariableProvider) private variableProvider: VsCodeVariableProvider
     ) {}
 
-    async showPreview(document: SqlDocument): Promise<void> {
+    public async showPreview(document: SqlDocument): Promise<void> {
         const options: PreviewOptions = { isFullRender: false };
         
         this.webViewManager.showPreview(document, options);
@@ -26,7 +26,7 @@ export class PreviewService {
         }
     }
 
-    async showFullRender(document: SqlDocument): Promise<void> {
+    public async showFullRender(document: SqlDocument): Promise<void> {
         await this.showPreview(document);
 
         const variables = await this.variableProvider.getVariables();
@@ -50,18 +50,21 @@ export class PreviewService {
         }
     }
 
-    updatePreview(document: SqlDocument): void {
+    public updatePreview(document: SqlDocument): void {
+        console.log('[PreviewService] updatePreview called for document:', document.fileName);
         const simpleOptions: PreviewOptions = { isFullRender: false };
         const simpleResult = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
         
         if (simpleResult.error) {
+            console.log('[PreviewService] Error processing document:', simpleResult.error);
             this.webViewManager.updatePanelWithError(document, simpleOptions, simpleResult.error);
         } else {
+            console.log('[PreviewService] Successfully processed document, updating panel');
             this.webViewManager.updatePanelWithProcessedContent(document, simpleOptions, simpleResult.content);
         }
     }
 
-    dispose(): void {
+    public dispose(): void {
         this.webViewManager.dispose();
     }
 } 

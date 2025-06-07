@@ -10,11 +10,11 @@ export class NunjucksTemplateRenderer implements TemplateRenderer {
         this.env = new nunjucks.Environment();
     }
 
-    render(template: string, variables: Record<string, any>): string {
+    public render(template: string, variables: Record<string, any>): string {
         try {
             return this.env.renderString(template, variables);
         } catch (error) {
-            throw new Error(`Ошибка рендеринга шаблона: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`);
+            throw new Error(`Template rendering error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         }
     }
 } 

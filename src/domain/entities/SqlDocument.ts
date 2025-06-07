@@ -8,41 +8,41 @@ export class SqlDocument {
         this.validateSqlFile();
     }
 
-    get fileName(): string {
+    public get fileName(): string {
         return this.filePath;
     }
 
-    get sqlContent(): string {
+    public get sqlContent(): string {
         return this.content;
     }
 
-    get baseName(): string {
+    public get baseName(): string {
         return path.basename(this.filePath);
     }
 
-    get isValid(): boolean {
+    public get isValid(): boolean {
         return this.content.trim().length > 0;
     }
 
-    hasIncludes(): boolean {
+    public hasIncludes(): boolean {
         return /{%\s*include\s+['"]([^'"]+)['"]\s*%}/g.test(this.content);
     }
 
-    hasTemplateVariables(): boolean {
+    public hasTemplateVariables(): boolean {
         return /{{\s*[^}]+\s*}}/g.test(this.content);
     }
 
     private validateSqlFile(): void {
         if (!this.filePath.endsWith('.sql')) {
-            throw new Error('Файл должен иметь расширение .sql');
+            throw new Error('File must have .sql extension');
         }
         
         if (!this.content) {
-            throw new Error('Содержимое SQL файла не может быть пустым');
+            throw new Error('SQL file content cannot be empty');
         }
     }
 
-    static create(filePath: string, content: string): SqlDocument {
+    public static create(filePath: string, content: string): SqlDocument {
         return new SqlDocument(filePath, content);
     }
 } 

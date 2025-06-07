@@ -11,14 +11,14 @@ export interface SqlFileRepository {
 export class SqlFileIncludeService {
     constructor(private readonly fileRepository: SqlFileRepository) {}
 
-    expandIncludes(sqlDocument: SqlDocument): ProcessedSql {
-        if (!sqlDocument.hasIncludes()) {
-            return ProcessedSql.fromContent(sqlDocument.sqlContent);
+    public expandIncludes(document: SqlDocument): ProcessedSql {
+        if (!document.hasIncludes()) {
+            return ProcessedSql.fromContent(document.sqlContent);
         }
 
         const workspaceRoot = this.fileRepository.getWorkspaceRoot();
         const expandedContent = this.processIncludesRecursive(
-            sqlDocument.sqlContent, 
+            document.sqlContent, 
             workspaceRoot, 
             new Set()
         );
@@ -38,12 +38,12 @@ export class SqlFileIncludeService {
             const fullIncludePath = this.resolveIncludePath(includePath, workspaceRoot);
 
             if (processedFiles.has(fullIncludePath)) {
-                return this.createIncludeComment('ЦИКЛИЧЕСКОЕ ВКЛЮЧЕНИЕ', includePath);
+                return this.createIncludeComment('CIRCULAR INCLUDE', includePath);
             }
 
             try {
                 if (!this.fileRepository.exists(fullIncludePath)) {
-                    return this.createIncludeComment('ФАЙЛ НЕ НАЙДЕН', includePath, fullIncludePath);
+                    return this.createIncludeComment('FILE NOT FOUND', includePath, fullIncludePath);
                 }
 
                 const includeContent = this.fileRepository.readFile(fullIncludePath);
@@ -59,8 +59,8 @@ export class SqlFileIncludeService {
 
                 return this.wrapIncludeContent(includePath, processedInclude);
             } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
-                return this.createIncludeComment('ОШИБКА ВКЛЮЧЕНИЯ', includePath, errorMessage);
+                const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+                return this.createIncludeComment('INCLUDE ERROR', includePath, errorMessage);
             }
         });
     }
@@ -81,6 +81,6 @@ export class SqlFileIncludeService {
     }
 
     private wrapIncludeContent(includePath: string, content: string): string {
-        return `\n/* === ВКЛЮЧЕНО ИЗ: ${includePath} === */\n${content}\n/* === КОНЕЦ ВКЛЮЧЕНИЯ: ${includePath} === */\n`;
+        return `\n/* === INCLUDED FROM: ${includePath} === */\n${content}\n/* === END INCLUDE: ${includePath} === */\n`;
     }
 } 

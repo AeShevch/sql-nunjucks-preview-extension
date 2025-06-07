@@ -11,44 +11,44 @@ export class PreviewConfiguration {
         this.validateConfiguration();
     }
 
-    get previewType(): PreviewType {
+    public get previewType(): PreviewType {
         return this.type;
     }
 
-    get variables(): Record<string, any> | undefined {
+    public get variables(): Record<string, any> | undefined {
         return this.templateVariables ? { ...this.templateVariables } : undefined;
     }
 
-    get requiresVariables(): boolean {
+    public get requiresVariables(): boolean {
         return this.type === PreviewType.FULL_TEMPLATE_RENDER;
     }
 
-    get isFullRender(): boolean {
+    public get isFullRender(): boolean {
         return this.type === PreviewType.FULL_TEMPLATE_RENDER;
     }
 
-    get displayName(): string {
+    public get displayName(): string {
         switch (this.type) {
             case PreviewType.INCLUDE_EXPANSION:
-                return 'SQL Preview с развернутыми включениями';
+                return 'SQL Preview with expanded includes';
             case PreviewType.FULL_TEMPLATE_RENDER:
-                return 'SQL Full Render с подставленными переменными';
+                return 'SQL Full Render with substituted variables';
             default:
-                return 'Неизвестный тип превью';
+                return 'Unknown preview type';
         }
     }
 
     private validateConfiguration(): void {
         if (this.requiresVariables && !this.templateVariables) {
-            throw new Error('Для полного рендера требуются переменные шаблона');
+            throw new Error('Template variables are required for full render');
         }
     }
 
-    static includeExpansionOnly(): PreviewConfiguration {
+    public static includeExpansionOnly(): PreviewConfiguration {
         return new PreviewConfiguration(PreviewType.INCLUDE_EXPANSION);
     }
 
-    static fullTemplateRender(variables: Record<string, any>): PreviewConfiguration {
+    public static fullTemplateRender(variables: Record<string, any>): PreviewConfiguration {
         return new PreviewConfiguration(PreviewType.FULL_TEMPLATE_RENDER, variables);
     }
 } 

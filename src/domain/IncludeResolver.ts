@@ -7,7 +7,7 @@ import { VsCodeFileSystemAdapter } from '@infrastructure/FileSystemAdapter';
 export class SqlIncludeResolver implements IncludeResolver {
     constructor(@inject(VsCodeFileSystemAdapter) private fileSystem: VsCodeFileSystemAdapter) {}
 
-    resolve(filePath: string, content: string): string {
+    public resolve(fileName: string, content: string): string {
         const workspaceRoot = this.fileSystem.getWorkspaceRoot();
         return this.processIncludesRecursive(content, workspaceRoot, new Set());
     }
@@ -19,12 +19,12 @@ export class SqlIncludeResolver implements IncludeResolver {
             const fullIncludePath = this.resolveIncludePath(includePath, workspaceRoot);
 
             if (processedFiles.has(fullIncludePath)) {
-                return `/* ЦИКЛИЧЕСКОЕ ВКЛЮЧЕНИЕ: ${includePath} */`;
+                return `/* CIRCULAR INCLUDE: ${includePath} */`;
             }
 
             try {
                 if (!this.fileSystem.exists(fullIncludePath)) {
-                    return `/* ФАЙЛ НЕ НАЙДЕН: ${includePath} (искали в ${fullIncludePath}) */`;
+                    return `/* FILE NOT FOUND: ${includePath} (searched in ${fullIncludePath}) */`;
                 }
 
                 const includeContent = this.fileSystem.readFile(fullIncludePath);
@@ -38,9 +38,9 @@ export class SqlIncludeResolver implements IncludeResolver {
 
                 processedFiles.delete(fullIncludePath);
 
-                return `\n/* === ВКЛЮЧЕНО ИЗ: ${includePath} === */\n${processedInclude}\n/* === КОНЕЦ ВКЛЮЧЕНИЯ: ${includePath} === */\n`;
+                return `\n/* === INCLUDED FROM: ${includePath} === */\n${processedInclude}\n/* === END INCLUDE: ${includePath} === */\n`;
             } catch (error) {
-                return `/* ОШИБКА ВКЛЮЧЕНИЯ: ${includePath} - ${error instanceof Error ? error.message : 'Неизвестная ошибка'} */`;
+                return `/* INCLUDE ERROR: ${includePath} - ${error instanceof Error ? error.message : 'Unknown error'} */`;
             }
         });
     }

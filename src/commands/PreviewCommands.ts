@@ -11,7 +11,7 @@ export interface Command {
 export class ShowPreviewCommand implements Command {
     constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
-    async execute(): Promise<void> {
+    public async execute(): Promise<void> {
         const editor = vscode.window.activeTextEditor;
         if (!this.validateEditor(editor)) {
             return;
@@ -27,7 +27,7 @@ export class ShowPreviewCommand implements Command {
 
     private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
         if (!editor || !editor.document.fileName.endsWith('.sql')) {
-            vscode.window.showErrorMessage('Откройте SQL файл для предварительного просмотра');
+            vscode.window.showErrorMessage('Please open an SQL file for preview');
             return false;
         }
         return true;
@@ -38,7 +38,7 @@ export class ShowPreviewCommand implements Command {
 export class ShowFullRenderCommand implements Command {
     constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
-    async execute(): Promise<void> {
+    public async execute(): Promise<void> {
         const editor = vscode.window.activeTextEditor;
         if (!this.validateEditor(editor)) {
             return;
@@ -54,7 +54,7 @@ export class ShowFullRenderCommand implements Command {
 
     private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
         if (!editor || !editor.document.fileName.endsWith('.sql')) {
-            vscode.window.showErrorMessage('Откройте SQL файл для предварительного просмотра');
+            vscode.window.showErrorMessage('Please open an SQL file for preview');
             return false;
         }
         return true;
@@ -65,12 +65,12 @@ export class ShowFullRenderCommand implements Command {
 export class CommandRegistry {
     private commands: Map<string, Command> = new Map();
 
-    register(commandId: string, command: Command): vscode.Disposable {
+    public register(commandId: string, command: Command): vscode.Disposable {
         this.commands.set(commandId, command);
         return vscode.commands.registerCommand(commandId, () => command.execute());
     }
 
-    getCommand(commandId: string): Command | undefined {
+    public getCommand(commandId: string): Command | undefined {
         return this.commands.get(commandId);
     }
 } 
