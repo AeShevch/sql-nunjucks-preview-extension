@@ -1,7 +1,7 @@
 import { SqlDocument, PreviewOptions, RenderStrategy, VariableProvider } from '@types';
 import { SqlProcessor } from '@domain/SqlProcessor';
 import { VsCodeWebViewManager } from '@presentation/WebViewManager';
-import { injectable, inject, singleton } from 'tsyringe';
+import { inject, singleton } from 'tsyringe';
 import { VsCodeVariableProvider } from '@infrastructure/VsCodeVariableProvider';
 
 @singleton()
@@ -51,15 +51,12 @@ export class PreviewService {
     }
 
     public updatePreview(document: SqlDocument): void {
-        console.log('[PreviewService] updatePreview called for document:', document.fileName);
         const simpleOptions: PreviewOptions = { isFullRender: false };
         const simpleResult = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
         
         if (simpleResult.error) {
-            console.log('[PreviewService] Error processing document:', simpleResult.error);
             this.webViewManager.updatePanelWithError(document, simpleOptions, simpleResult.error);
         } else {
-            console.log('[PreviewService] Successfully processed document, updating panel');
             this.webViewManager.updatePanelWithProcessedContent(document, simpleOptions, simpleResult.content);
         }
     }

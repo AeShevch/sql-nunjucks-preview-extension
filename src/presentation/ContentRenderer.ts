@@ -1,6 +1,5 @@
-import * as path from 'path';
 import { ContentRenderer, PreviewOptions } from '@types';
-import { injectable, singleton } from 'tsyringe';
+import { singleton } from 'tsyringe';
 
 @singleton()
 export class HtmlContentRenderer implements ContentRenderer {
@@ -27,9 +26,6 @@ export class HtmlContentRenderer implements ContentRenderer {
             <div class="header">
                 <h1>${options.isFullRender ? '🔧 SQL Full Render' : '📋 SQL Preview'} - ${fileName}</h1>
                 <p>${options.isFullRender ? 'Fully processed SQL with substituted variables' : 'SQL with expanded includes'}</p>
-                <div class="auto-update-indicator">
-                    <small>🔄 Auto-updates when file changes</small>
-                </div>
             </div>
             ${variablesSection}
             <div class="sql-content">${this.highlightSql(sql)}</div>

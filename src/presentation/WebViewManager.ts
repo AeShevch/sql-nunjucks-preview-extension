@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { WebViewManager, SqlDocument, PreviewOptions, ContentRenderer } from '@types';
-import { injectable, inject, singleton } from 'tsyringe';
+import { WebViewManager, SqlDocument, PreviewOptions } from '@types';
+import { inject, singleton } from 'tsyringe';
 import { HtmlContentRenderer } from '@presentation/ContentRenderer';
 
 export interface WebViewFactory {
@@ -31,35 +31,25 @@ export class VsCodeWebViewManager implements WebViewManager {
     constructor(
         @inject(VsCodeWebViewFactory) private webViewFactory: WebViewFactory,
         @inject(HtmlContentRenderer) private contentRenderer: HtmlContentRenderer
-    ) {
-        console.log('[WebViewManager] Constructor called, creating new Maps');
-    }
+    ) {}
 
     public showPreview(document: SqlDocument, options: PreviewOptions): void {
-        console.log('[WebViewManager] showPreview called for:', document.fileName, 'isFullRender:', options.isFullRender);
         const panelKey = this.generatePanelKey(document, options);
-        console.log('[WebViewManager] Generated panel key:', panelKey);
         let panel = this.webviewPanels.get(panelKey);
 
         if (panel) {
-            console.log('[WebViewManager] Existing panel found, revealing it');
             panel.reveal(vscode.ViewColumn.Beside);
             return;
         }
 
-        console.log('[WebViewManager] Creating new panel');
         const title = this.generateTitle(document, options);
         panel = this.webViewFactory.createWebView(title);
 
         panel.onDidDispose(() => {
-            console.log('[WebViewManager] Panel disposed, removing from map:', panelKey);
-            console.log('[WebViewManager] Map before deletion:', Array.from(this.webviewPanels.keys()));
             this.webviewPanels.delete(panelKey);
-            console.log('[WebViewManager] Map after deletion:', Array.from(this.webviewPanels.keys()));
         });
 
         this.webviewPanels.set(panelKey, panel);
-        console.log('[WebViewManager] Panel stored in map, available panels:', Array.from(this.webviewPanels.keys()));
         this.updatePanelContent(panel, document, options);
     }
 
@@ -128,23 +118,16 @@ export class VsCodeWebViewManager implements WebViewManager {
     }
 
     public updatePanelWithProcessedContent(document: SqlDocument, options: PreviewOptions, processedContent: string): void {
-        console.log('[WebViewManager] updatePanelWithProcessedContent called for:', document.fileName);
-        console.log('[WebViewManager] Current Map size:', this.webviewPanels.size);
         const panelKey = this.generatePanelKey(document, options);
-        console.log('[WebViewManager] Looking for panel with key:', panelKey);
         const panel = this.webviewPanels.get(panelKey);
         
         if (panel) {
-            console.log('[WebViewManager] Panel found, updating HTML content');
             const fileName = path.basename(document.fileName);
             panel.webview.html = this.contentRenderer.renderPreview(processedContent, fileName, options);
-            console.log('[WebViewManager] HTML content updated successfully');
             
             if (options.variables) {
                 (panel as any)._storedVariables = options.variables;
             }
-        } else {
-            console.log('[WebViewManager] Panel not found! Available panels:', Array.from(this.webviewPanels.keys()));
         }
     }
 
