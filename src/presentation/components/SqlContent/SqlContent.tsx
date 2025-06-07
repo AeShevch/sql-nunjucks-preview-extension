@@ -1,15 +1,25 @@
-import React, { useEffect, useRef } from 'react';
-import { Box, Text } from '@primer/react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, IconButton, Text } from '@primer/react';
 import hljs from 'highlight.js/lib/core';
 import sql from 'highlight.js/lib/languages/sql';
 import 'highlight.js/styles/github-dark.css';
 import { SqlContentProps } from '@presentation/components/SqlContent/types';
+import {CopyIcon} from '@primer/octicons-react'
 
 hljs.registerLanguage('sql', sql);
 
 export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   const codeRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(sqlContent);
+    setIsCopied(true);
+    setTimeout(() => {
+      setIsCopied(false);
+    }, 2000);
+  };
 
   useEffect(() => {
     if (codeRef.current && sqlContent) {
@@ -38,10 +48,21 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
         borderColor="border.default"
         px={3}
         py={2}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
       >
         <Text fontSize={1} fontWeight="semibold" color="fg.muted">
           SQL
         </Text>
+        <IconButton 
+            style={{ backgroundColor: '#212830', borderColor: '#3d444d', color: '#9198a1' }} 
+            size="small" 
+            onClick={handleCopy} 
+            aria-label={isCopied ? 'Copied' : 'Copy to clipboard'} 
+            icon={CopyIcon} 
+            tooltipDirection='n'
+        />
       </Box>
       <Box p={3} bg="canvas.default">
         <Box

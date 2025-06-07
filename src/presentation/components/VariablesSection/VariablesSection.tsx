@@ -48,11 +48,11 @@ export const VariablesSection: React.FC<VariablesSectionProps> = ({
         }}
       >
         <Text fontSize={1} fontWeight="semibold" color="fg.muted">
-          Переменные шаблона
+          Template variables
         </Text>
         {isEditable && !isEditing && (
-          <Button size="small" onClick={handleStartEdit}>
-            Редактировать
+          <Button size="small" onClick={handleStartEdit} style={{ backgroundColor: '#212830', borderColor: '#3d444d' }} >
+            Edit
           </Button>
         )}
       </Box>
@@ -83,10 +83,10 @@ export const VariablesSection: React.FC<VariablesSectionProps> = ({
             )}
             <Box sx={{ display: 'flex', gap: 2 }}>
               <Button size="small" variant="primary" onClick={handleSave}>
-                Сохранить
+                Save
               </Button>
               <Button size="small" onClick={handleCancel}>
-                Отмена
+                Cancel
               </Button>
             </Box>
           </Box>
