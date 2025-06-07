@@ -13,5 +13,6 @@ export interface PreviewOptions {
 export interface WebViewManager {
   showPreview(document: SqlDocument, options: PreviewOptions): void;
   updatePreview(document: SqlDocument, options: PreviewOptions): void;
+  setVariablesChangedCallback(callback: (document: SqlDocument, variables: Record<string, any>) => void): void;
   dispose(): void;
 } 

@@ -10,11 +10,16 @@ import { VsCodeWebViewFactory } from '@presentation/WebViewManager/WebViewFactor
 export class VsCodeWebViewManager implements WebViewManager {
   private webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
   private updateTimeouts: Map<string, NodeJS.Timeout> = new Map();
+  private variablesChangedCallback?: (document: SqlDocument, variables: Record<string, any>) => void;
 
   constructor(
     @inject(VsCodeWebViewFactory) private webViewFactory: WebViewFactory,
     @inject(ReactContentRenderer) private contentRenderer: ReactContentRenderer
   ) {}
+
+  public setVariablesChangedCallback(callback: (document: SqlDocument, variables: Record<string, any>) => void): void {
+    this.variablesChangedCallback = callback;
+  }
 
   public showPreview(document: SqlDocument, options: PreviewOptions): void {
     const panelKey = this.generatePanelKey(document, options);
@@ -27,6 +32,12 @@ export class VsCodeWebViewManager implements WebViewManager {
 
     const title = this.generateTitle(document, options);
     panel = this.webViewFactory.createWebView(title);
+
+    panel.webview.onDidReceiveMessage((message) => {
+      if (message.type === 'variablesChanged' && this.variablesChangedCallback) {
+        this.variablesChangedCallback(document, message.variables);
+      }
+    });
 
     panel.onDidDispose(() => {
       this.webviewPanels.delete(panelKey);

@@ -28,6 +28,9 @@ export class ReactContentRenderer implements ContentRenderer {
                                   <body>
              <div id="react-root"></div>
              <script>
+                 const vscode = acquireVsCodeApi();
+                 window.vscode = vscode;
+                 
                  ${BundleEmbedder.getReactBundle()}
                  
                  if (typeof window.renderSqlPreview === 'function') {
