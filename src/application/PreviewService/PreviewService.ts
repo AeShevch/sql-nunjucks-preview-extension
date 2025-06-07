@@ -53,7 +53,13 @@ export class PreviewService {
 
     this.webViewManager.showPreview(document, options);
 
-    this.webViewManager.updatePanelWithProcessedContent(document, options, includeResult.content);
+    const fullRenderResult = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, extractedVariables);
+
+    if (fullRenderResult.error) {
+      this.webViewManager.updatePanelWithError(document, options, fullRenderResult.error);
+    } else {
+      this.webViewManager.updatePanelWithProcessedContent(document, options, fullRenderResult.content);
+    }
   }
 
   private updateFullRenderWithVariables(document: SqlDocument, variables: Record<string, any>): void {
