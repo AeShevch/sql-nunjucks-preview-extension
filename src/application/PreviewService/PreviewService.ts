@@ -90,6 +90,44 @@ export class PreviewService {
         simpleResult.content
       );
     }
+
+    this.updateFullRenderIfExists(document, simpleResult);
+  }
+
+  private updateFullRenderIfExists(document: SqlDocument, includeResult: { content: string; error?: string }): void {
+    if (includeResult.error) {
+      return;
+    }
+
+    const storedVariables = this.webViewManager.getStoredVariables(document);
+    
+    let variablesToUse: Record<string, any>;
+    
+    if (storedVariables) {
+      const extractedVariables = this.variableParser.extractVariables(includeResult.content);
+      
+      variablesToUse = { ...extractedVariables };
+      Object.keys(storedVariables).forEach(key => {
+        if (key in variablesToUse) {
+          variablesToUse[key] = storedVariables[key];
+        }
+      });
+    } else {
+      return;
+    }
+    
+    const fullRenderOptions: PreviewOptions = {
+      isFullRender: true,
+      variables: variablesToUse,
+    };
+
+    const fullRenderResult = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, variablesToUse);
+
+    if (fullRenderResult.error) {
+      this.webViewManager.updatePanelWithError(document, fullRenderOptions, fullRenderResult.error);
+    } else {
+      this.webViewManager.updatePanelWithProcessedContent(document, fullRenderOptions, fullRenderResult.content);
+    }
   }
 
   public dispose(): void {

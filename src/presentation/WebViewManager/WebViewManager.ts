@@ -21,6 +21,17 @@ export class VsCodeWebViewManager implements WebViewManager {
     this.variablesChangedCallback = callback;
   }
 
+  public getStoredVariables(document: SqlDocument): Record<string, any> | undefined {
+    const fullRenderKey = `${document.fileName}-full`;
+    const fullPanel = this.webviewPanels.get(fullRenderKey);
+    
+    if (fullPanel) {
+      return (fullPanel as any)._storedVariables;
+    }
+    
+    return undefined;
+  }
+
   public showPreview(document: SqlDocument, options: PreviewOptions): void {
     const panelKey = this.generatePanelKey(document, options);
     let panel = this.webviewPanels.get(panelKey);
