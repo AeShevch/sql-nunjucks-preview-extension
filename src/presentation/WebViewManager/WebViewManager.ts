@@ -3,17 +3,8 @@ import * as path from 'path';
 import { WebViewManager, PreviewOptions, WebViewFactory } from '@presentation/WebViewManager/types';
 import { SqlDocument } from '@domain/entities/SqlDocument/types';
 import { inject, singleton } from 'tsyringe';
-import { HtmlContentRenderer } from '@presentation/ContentRenderer/ContentRenderer';
-
-@singleton()
-export class VsCodeWebViewFactory implements WebViewFactory {
-  public createWebView(title: string): vscode.WebviewPanel {
-    return vscode.window.createWebviewPanel('sqlNunjucksPreview', title, vscode.ViewColumn.Beside, {
-      enableScripts: true,
-      retainContextWhenHidden: true,
-    });
-  }
-}
+import { ReactContentRenderer } from '@presentation/ContentRenderer/ReactContentRenderer';
+import { VsCodeWebViewFactory } from '@presentation/WebViewManager/WebViewFactory';
 
 @singleton()
 export class VsCodeWebViewManager implements WebViewManager {
@@ -22,7 +13,7 @@ export class VsCodeWebViewManager implements WebViewManager {
 
   constructor(
     @inject(VsCodeWebViewFactory) private webViewFactory: WebViewFactory,
-    @inject(HtmlContentRenderer) private contentRenderer: HtmlContentRenderer
+    @inject(ReactContentRenderer) private contentRenderer: ReactContentRenderer
   ) {}
 
   public showPreview(document: SqlDocument, options: PreviewOptions): void {
