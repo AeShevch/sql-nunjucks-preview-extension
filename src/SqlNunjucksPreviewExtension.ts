@@ -1,13 +1,14 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
 import { injectable, inject } from 'tsyringe';
-import { PreviewService } from '@application/PreviewService';
-import { VsCodeDocumentWatcher } from '@infrastructure/DocumentWatcher';
+import { PreviewService } from '@application/PreviewService/PreviewService';
+import { VsCodeDocumentWatcher } from '@infrastructure/DocumentWatcher/DocumentWatcher';
 import {
   ShowPreviewCommand,
   ShowFullRenderCommand,
   CommandRegistry,
-} from '@commands/PreviewCommands';
+} from '@commands/PreviewCommands/PreviewCommands';
+import { SqlDocument } from '@domain/entities/SqlDocument/types';
 
 @injectable()
 export class SqlNunjucksPreviewExtension {
@@ -21,8 +22,8 @@ export class SqlNunjucksPreviewExtension {
 
   public activate(context: vscode.ExtensionContext): void {
     try {
-      this.registerCommands(context);
-      this.registerDocumentWatcher(context);
+      this.registerUICommands(context);
+      this.registerDocumentUpdateWatcher(context);
 
       vscode.window.showInformationMessage('SQL Nunjucks Preview extension activated!');
     } catch (error) {
@@ -36,7 +37,7 @@ export class SqlNunjucksPreviewExtension {
     this.documentWatcher?.dispose();
   }
 
-  private registerCommands(context: vscode.ExtensionContext): void {
+  private registerUICommands(context: vscode.ExtensionContext): void {
     const disposables = [
       this.commandRegistry.register('sqlNunjucksPreview.showPreview', this.showPreviewCommand),
       this.commandRegistry.register(
@@ -48,8 +49,8 @@ export class SqlNunjucksPreviewExtension {
     context.subscriptions.push(...disposables);
   }
 
-  private registerDocumentWatcher(context: vscode.ExtensionContext): void {
-    this.documentWatcher.watch(document => {
+  private registerDocumentUpdateWatcher(context: vscode.ExtensionContext): void {
+    this.documentWatcher.watch((document: SqlDocument) => {
       this.previewService.updatePreview(document);
     });
 
