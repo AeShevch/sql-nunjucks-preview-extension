@@ -1,5 +1,6 @@
 .vscode/**
 .vscode-test/**
+out/test/**
 src/**
 .gitignore
 .yarnrc
@@ -8,4 +9,15 @@ vsc-extension-quickstart.md
 **/.eslintrc.json
 **/*.map
 **/*.ts
-!dist/** 
+node_modules/**
+npm-debug.log
+yarn-error.log
+test/**
+*.vsix
+webpack.config.js
+tsconfig.json
+.prettierrc
+.eslintrc.js
+**/*.test.ts
+**/*.spec.ts
+test_*.sql 

@@ -1,0 +1,20 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" fill="#1e1e1e" rx="16"/>
+  
+  <!-- SQL symbol -->
+  <rect x="20" y="30" width="88" height="68" fill="#2d3748" rx="4" stroke="#4a5568" stroke-width="2"/>
+  
+  <!-- Template brackets -->
+  <text x="30" y="50" font-family="monospace" font-size="14" fill="#63b3ed" font-weight="bold">{%</text>
+  <text x="85" y="50" font-family="monospace" font-size="14" fill="#63b3ed" font-weight="bold">%}</text>
+  
+  <!-- Variable -->
+  <text x="45" y="66" font-family="monospace" font-size="12" fill="#f7fafc">SQL</text>
+  
+  <!-- SQL text -->
+  <text x="30" y="85" font-family="monospace" font-size="10" fill="#a0aec0">SELECT *</text>
+  
+  <!-- Nunjucks indicator -->
+  <circle cx="96" cy="96" r="12" fill="#38b2ac"/>
+  <text x="91" y="100" font-family="sans-serif" font-size="10" fill="white" font-weight="bold">N</text>
+</svg> 

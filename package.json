@@ -1,14 +1,43 @@
 {
   "name": "sql-nunjucks-preview",
   "displayName": "SQL Nunjucks Preview",
-  "description": "Preview SQL files with Nunjucks templates, showing resolved includes and rendered output",
-  "version": "0.0.1",
+  "description": "Preview SQL files with Nunjucks templates, showing resolved includes and rendered output with interactive variable editing",
+  "version": "1.0.0",
+  "publisher": "AleksandrShevchenko",
+  "author": {
+    "name": "Aleksandr Shevchenko",
+    "email": "shevch.ae@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/sql-nunjucks-preview-extension.git"
+  },
+  "homepage": "https://github.com/your-username/sql-nunjucks-preview-extension",
+  "bugs": {
+    "url": "https://github.com/your-username/sql-nunjucks-preview-extension/issues"
+  },
+  "keywords": [
+    "sql",
+    "nunjucks",
+    "template",
+    "preview",
+    "database",
+    "query",
+    "jinja",
+    "templating"
+  ],
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
+    "Formatters",
     "Other"
   ],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
   "activationEvents": [
     "onLanguage:sql"
   ],
