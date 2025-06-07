@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import * as vscode from "vscode";
-import { autoInjectable, inject } from "tsyringe";
-import { PreviewService } from "./application/PreviewService";
-import { VsCodeDocumentWatcher } from "./infrastructure/DocumentWatcher";
-import { ShowPreviewCommand, ShowFullRenderCommand, CommandRegistry } from "./commands/PreviewCommands";
+import { injectable, inject } from "tsyringe";
+import { PreviewService } from "@application/PreviewService";
+import { VsCodeDocumentWatcher } from "@infrastructure/DocumentWatcher";
+import { ShowPreviewCommand, ShowFullRenderCommand, CommandRegistry } from "@commands/PreviewCommands";
 
-@autoInjectable()
+@injectable()
 export class SqlNunjucksPreviewExtension {
     constructor(
         @inject(PreviewService) private readonly previewService: PreviewService,

@@ -1,4 +1,4 @@
-import { ProcessedSql } from '../value-objects/ProcessedSql';
+import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
 
 export interface TemplateEngine {
     render(template: string, variables: Record<string, any>): string;

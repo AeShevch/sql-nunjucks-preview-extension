@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import { SqlFileRepository } from '../domain/services/SqlFileIncludeService';
+import { SqlFileRepository } from '@domain/services/SqlFileIncludeService';
 
 export class VsCodeSqlFileRepository implements SqlFileRepository {
     readFile(filePath: string): string {

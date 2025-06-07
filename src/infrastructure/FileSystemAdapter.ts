@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as vscode from 'vscode';
-import { FileSystemAdapter } from '../types';
+import { FileSystemAdapter } from '@types';
 import { injectable } from 'tsyringe';
 
 @injectable()

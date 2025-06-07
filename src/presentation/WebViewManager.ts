@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { WebViewManager, SqlDocument, PreviewOptions, ContentRenderer } from '../types';
+import { WebViewManager, SqlDocument, PreviewOptions, ContentRenderer } from '@types';
 import { injectable, inject } from 'tsyringe';
-import { HtmlContentRenderer } from './ContentRenderer';
+import { HtmlContentRenderer } from '@presentation/ContentRenderer';
 
 export interface WebViewFactory {
     createWebView(title: string): vscode.WebviewPanel;

@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { ContentRenderer, PreviewOptions } from '../types';
+import { ContentRenderer, PreviewOptions } from '@types';
 import { injectable } from 'tsyringe';
 
 @injectable()

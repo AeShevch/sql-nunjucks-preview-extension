@@ -1,6 +1,6 @@
 import * as path from 'path';
-import { SqlDocument } from '../entities/SqlDocument';
-import { ProcessedSql } from '../value-objects/ProcessedSql';
+import { SqlDocument } from '@domain/entities/SqlDocument';
+import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
 
 export interface SqlFileRepository {
     readFile(filePath: string): string;

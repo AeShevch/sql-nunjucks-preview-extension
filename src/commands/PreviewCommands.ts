@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { SqlDocument } from '../types';
-import { PreviewService } from '../application/PreviewService';
+import { SqlDocument } from '@types';
+import { PreviewService } from '@application/PreviewService';
 import { injectable, inject } from 'tsyringe';
 
 export interface Command {

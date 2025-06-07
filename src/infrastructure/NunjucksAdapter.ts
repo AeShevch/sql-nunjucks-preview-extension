@@ -1,5 +1,5 @@
 import * as nunjucks from 'nunjucks';
-import { TemplateRenderer } from '../types';
+import { TemplateRenderer } from '@types';
 import { injectable } from 'tsyringe';
 
 @injectable()

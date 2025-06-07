@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import * as vscode from 'vscode';
 import { container } from 'tsyringe';
-import { SqlNunjucksPreviewExtension } from './SqlNunjucksPreviewExtension';
+import { SqlNunjucksPreviewExtension } from '@/SqlNunjucksPreviewExtension';
 
 const extension = container.resolve(SqlNunjucksPreviewExtension);
 

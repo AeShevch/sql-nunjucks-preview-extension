@@ -1,8 +1,8 @@
-import { SqlDocument } from '../domain/entities/SqlDocument';
-import { ProcessedSql } from '../domain/value-objects/ProcessedSql';
-import { PreviewConfiguration, PreviewType } from '../domain/value-objects/PreviewConfiguration';
-import { SqlFileIncludeService } from '../domain/services/SqlFileIncludeService';
-import { SqlTemplateRenderingService } from '../domain/services/SqlTemplateRenderingService';
+import { SqlDocument } from '@domain/entities/SqlDocument';
+import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
+import { PreviewConfiguration, PreviewType } from '@domain/value-objects/PreviewConfiguration';
+import { SqlFileIncludeService } from '@domain/services/SqlFileIncludeService';
+import { SqlTemplateRenderingService } from '@domain/services/SqlTemplateRenderingService';
 
 export interface PreviewDisplayPort {
     showPreview(document: SqlDocument, config: PreviewConfiguration, processedSql: ProcessedSql): void;

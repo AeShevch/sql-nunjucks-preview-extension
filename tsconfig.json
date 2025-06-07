@@ -13,7 +13,17 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@application/*": ["application/*"],
+      "@domain/*": ["domain/*"],
+      "@infrastructure/*": ["infrastructure/*"],
+      "@commands/*": ["commands/*"],
+      "@presentation/*": ["presentation/*"],
+      "@types": ["types"]
+    }
   },
   "exclude": [
     "node_modules",

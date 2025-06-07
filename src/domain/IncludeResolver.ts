@@ -1,7 +1,7 @@
 import * as path from 'path';
-import { IncludeResolver, FileSystemAdapter } from '../types';
+import { IncludeResolver, FileSystemAdapter } from '@types';
 import { injectable, inject } from 'tsyringe';
-import { VsCodeFileSystemAdapter } from '../infrastructure/FileSystemAdapter';
+import { VsCodeFileSystemAdapter } from '@infrastructure/FileSystemAdapter';
 
 @injectable()
 export class SqlIncludeResolver implements IncludeResolver {

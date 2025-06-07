@@ -1,7 +1,7 @@
-import { NunjucksTemplateRenderer } from '../infrastructure/NunjucksAdapter';
-import { SqlDocument, RenderResult, RenderStrategy, IncludeResolver, TemplateRenderer } from '../types';
+import { NunjucksTemplateRenderer } from '@infrastructure/NunjucksAdapter';
+import { SqlDocument, RenderResult, RenderStrategy, IncludeResolver, TemplateRenderer } from '@types';
 import { injectable, inject } from 'tsyringe';
-import { SqlIncludeResolver } from './IncludeResolver';
+import { SqlIncludeResolver } from '@domain/IncludeResolver';
 
 export interface SqlRenderStrategy {
     render(document: SqlDocument, variables?: Record<string, any>): RenderResult;
