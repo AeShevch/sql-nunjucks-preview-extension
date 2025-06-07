@@ -1,6 +1,6 @@
 # SQL Nunjucks Preview
 
-A powerful VS Code extension for previewing SQL files with Nunjucks template support. Resolve includes, render templates with variables, and interactively edit template variables.
+A VS Code extension for previewing SQL files with Nunjucks template support. Resolve includes, render templates with variables, and interactively edit template variables.
 
 ## Features
 
