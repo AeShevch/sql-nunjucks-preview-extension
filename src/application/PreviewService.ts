@@ -6,62 +6,66 @@ import { VsCodeVariableProvider } from '@infrastructure/VsCodeVariableProvider';
 
 @singleton()
 export class PreviewService {
-    constructor(
-        @inject(SqlProcessor) private sqlProcessor: SqlProcessor,
-        @inject(VsCodeWebViewManager) private webViewManager: VsCodeWebViewManager,
-        @inject(VsCodeVariableProvider) private variableProvider: VsCodeVariableProvider
-    ) {}
+  constructor(
+    @inject(SqlProcessor) private sqlProcessor: SqlProcessor,
+    @inject(VsCodeWebViewManager) private webViewManager: VsCodeWebViewManager,
+    @inject(VsCodeVariableProvider) private variableProvider: VsCodeVariableProvider
+  ) {}
 
-    public async showPreview(document: SqlDocument): Promise<void> {
-        const options: PreviewOptions = { isFullRender: false };
-        
-        this.webViewManager.showPreview(document, options);
-        
-        const result = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
-        
-        if (result.error) {
-            this.webViewManager.updatePanelWithError(document, options, result.error);
-        } else {
-            this.webViewManager.updatePanelWithProcessedContent(document, options, result.content);
-        }
+  public async showPreview(document: SqlDocument): Promise<void> {
+    const options: PreviewOptions = { isFullRender: false };
+
+    this.webViewManager.showPreview(document, options);
+
+    const result = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
+
+    if (result.error) {
+      this.webViewManager.updatePanelWithError(document, options, result.error);
+    } else {
+      this.webViewManager.updatePanelWithProcessedContent(document, options, result.content);
+    }
+  }
+
+  public async showFullRender(document: SqlDocument): Promise<void> {
+    await this.showPreview(document);
+
+    const variables = await this.variableProvider.getVariables();
+    if (!variables) {
+      return;
     }
 
-    public async showFullRender(document: SqlDocument): Promise<void> {
-        await this.showPreview(document);
+    const options: PreviewOptions = {
+      isFullRender: true,
+      variables,
+    };
 
-        const variables = await this.variableProvider.getVariables();
-        if (!variables) {
-            return;
-        }
+    this.webViewManager.showPreview(document, options);
 
-        const options: PreviewOptions = { 
-            isFullRender: true, 
-            variables 
-        };
+    const result = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, variables);
 
-        this.webViewManager.showPreview(document, options);
-
-        const result = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, variables);
-
-        if (result.error) {
-            this.webViewManager.updatePanelWithError(document, options, result.error);
-        } else {
-            this.webViewManager.updatePanelWithProcessedContent(document, options, result.content);
-        }
+    if (result.error) {
+      this.webViewManager.updatePanelWithError(document, options, result.error);
+    } else {
+      this.webViewManager.updatePanelWithProcessedContent(document, options, result.content);
     }
+  }
 
-    public updatePreview(document: SqlDocument): void {
-        const simpleOptions: PreviewOptions = { isFullRender: false };
-        const simpleResult = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
-        
-        if (simpleResult.error) {
-            this.webViewManager.updatePanelWithError(document, simpleOptions, simpleResult.error);
-        } else {
-            this.webViewManager.updatePanelWithProcessedContent(document, simpleOptions, simpleResult.content);
-        }
-    }
+  public updatePreview(document: SqlDocument): void {
+    const simpleOptions: PreviewOptions = { isFullRender: false };
+    const simpleResult = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
 
-    public dispose(): void {
-        this.webViewManager.dispose();
+    if (simpleResult.error) {
+      this.webViewManager.updatePanelWithError(document, simpleOptions, simpleResult.error);
+    } else {
+      this.webViewManager.updatePanelWithProcessedContent(
+        document,
+        simpleOptions,
+        simpleResult.content
+      );
     }
-} 
+  }
+
+  public dispose(): void {
+    this.webViewManager.dispose();
+  }
+}

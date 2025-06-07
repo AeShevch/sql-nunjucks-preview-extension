@@ -4,73 +4,71 @@ import { PreviewService } from '@application/PreviewService';
 import { injectable, inject } from 'tsyringe';
 
 export interface Command {
-    execute(): Promise<void>;
+  execute(): Promise<void>;
 }
 
 @injectable()
 export class ShowPreviewCommand implements Command {
-    constructor(@inject(PreviewService) private previewService: PreviewService) {}
+  constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
-    public async execute(): Promise<void> {
-        const editor = vscode.window.activeTextEditor;
-        if (!this.validateEditor(editor)) {
-            return;
-        }
-
-        const document: SqlDocument = {
-            fileName: editor.document.fileName,
-            content: editor.document.getText()
-        };
-
-        await this.previewService.showPreview(document);
+  public async execute(): Promise<void> {
+    const editor = vscode.window.activeTextEditor;
+    if (!this.validateEditor(editor)) {
+      return;
     }
 
-    private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
-        if (!editor || !editor.document.fileName.endsWith('.sql')) {
-            vscode.window.showErrorMessage('Please open an SQL file for preview');
-            return false;
-        }
-        return true;
+    await this.previewService.showPreview({
+      fileName: editor.document.fileName,
+      content: editor.document.getText(),
+    });
+  }
+
+  private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
+    if (!editor || !editor.document.fileName.endsWith('.sql')) {
+      vscode.window.showErrorMessage('Please open an SQL file for preview');
+      return false;
     }
+    return true;
+  }
 }
 
 @injectable()
 export class ShowFullRenderCommand implements Command {
-    constructor(@inject(PreviewService) private previewService: PreviewService) {}
+  constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
-    public async execute(): Promise<void> {
-        const editor = vscode.window.activeTextEditor;
-        if (!this.validateEditor(editor)) {
-            return;
-        }
-
-        const document: SqlDocument = {
-            fileName: editor.document.fileName,
-            content: editor.document.getText()
-        };
-
-        await this.previewService.showFullRender(document);
+  public async execute(): Promise<void> {
+    const editor = vscode.window.activeTextEditor;
+    if (!this.validateEditor(editor)) {
+      return;
     }
 
-    private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
-        if (!editor || !editor.document.fileName.endsWith('.sql')) {
-            vscode.window.showErrorMessage('Please open an SQL file for preview');
-            return false;
-        }
-        return true;
+    const document: SqlDocument = {
+      fileName: editor.document.fileName,
+      content: editor.document.getText(),
+    };
+
+    await this.previewService.showFullRender(document);
+  }
+
+  private validateEditor(editor: vscode.TextEditor | undefined): editor is vscode.TextEditor {
+    if (!editor || !editor.document.fileName.endsWith('.sql')) {
+      vscode.window.showErrorMessage('Please open an SQL file for preview');
+      return false;
     }
+    return true;
+  }
 }
 
 @injectable()
 export class CommandRegistry {
-    private commands: Map<string, Command> = new Map();
+  private commands: Map<string, Command> = new Map();
 
-    public register(commandId: string, command: Command): vscode.Disposable {
-        this.commands.set(commandId, command);
-        return vscode.commands.registerCommand(commandId, () => command.execute());
-    }
+  public register(commandId: string, command: Command): vscode.Disposable {
+    this.commands.set(commandId, command);
+    return vscode.commands.registerCommand(commandId, () => command.execute());
+  }
 
-    public getCommand(commandId: string): Command | undefined {
-        return this.commands.get(commandId);
-    }
-} 
+  public getCommand(commandId: string): Command | undefined {
+    return this.commands.get(commandId);
+  }
+}

@@ -3,15 +3,17 @@ import { singleton } from 'tsyringe';
 
 @singleton()
 export class HtmlContentRenderer implements ContentRenderer {
-    public renderPreview(sql: string, fileName: string, options: PreviewOptions): string {
-        const variablesSection = options.variables ? `
+  public renderPreview(sql: string, fileName: string, options: PreviewOptions): string {
+    const variablesSection = options.variables
+      ? `
             <div class="variables-section">
                 <h3>Template Variables:</h3>
                 <pre><code>${JSON.stringify(options.variables, null, 2)}</code></pre>
             </div>
-        ` : '';
+        `
+      : '';
 
-        return `
+    return `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -32,10 +34,10 @@ export class HtmlContentRenderer implements ContentRenderer {
         </body>
         </html>
         `;
-    }
+  }
 
-    public renderError(error: string): string {
-        return `
+  public renderError(error: string): string {
+    return `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -66,10 +68,10 @@ export class HtmlContentRenderer implements ContentRenderer {
         </body>
         </html>
         `;
-    }
+  }
 
-    private getStyles(): string {
-        return `
+  private getStyles(): string {
+    return `
                 body {
                     font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
                     line-height: 1.6;
@@ -133,12 +135,15 @@ export class HtmlContentRenderer implements ContentRenderer {
                     color: #ce9178;
                 }
         `;
-    }
+  }
 
-    private highlightSql(sql: string): string {
-        return sql
-            .replace(/\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP BY|ORDER BY|HAVING|UNION|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|INDEX|TABLE|DATABASE|IF|ELSE|CASE|WHEN|THEN|END|AS|AND|OR|NOT|IN|EXISTS|BETWEEN|LIKE|IS|NULL|COUNT|SUM|AVG|MIN|MAX|DISTINCT|LIMIT|OFFSET)\b/gi, '<span class="sql-keyword">$1</span>')
-            .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="sql-comment">$1</span>')
-            .replace(/('(?:[^'\\]|\\.)*')/g, '<span class="sql-string">$1</span>');
-    }
-} 
+  private highlightSql(sql: string): string {
+    return sql
+      .replace(
+        /\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP BY|ORDER BY|HAVING|UNION|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|INDEX|TABLE|DATABASE|IF|ELSE|CASE|WHEN|THEN|END|AS|AND|OR|NOT|IN|EXISTS|BETWEEN|LIKE|IS|NULL|COUNT|SUM|AVG|MIN|MAX|DISTINCT|LIMIT|OFFSET)\b/gi,
+        '<span class="sql-keyword">$1</span>'
+      )
+      .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="sql-comment">$1</span>')
+      .replace(/('(?:[^'\\]|\\.)*')/g, '<span class="sql-string">$1</span>');
+  }
+}

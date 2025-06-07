@@ -1,35 +1,36 @@
 import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
 
 export interface TemplateEngine {
-    render(template: string, variables: Record<string, any>): string;
+  render(template: string, variables: Record<string, any>): string;
 }
 
 export class SqlTemplateRenderingService {
-    constructor(private readonly templateEngine: TemplateEngine) {}
+  constructor(private readonly templateEngine: TemplateEngine) {}
 
-    public renderTemplate(processedSql: ProcessedSql, variables: Record<string, any>): ProcessedSql {
-        try {
-            const renderedContent = this.templateEngine.render(
-                processedSql.sqlContent, 
-                variables
-            );
+  public renderTemplate(processedSql: ProcessedSql, variables: Record<string, any>): ProcessedSql {
+    try {
+      const renderedContent = this.templateEngine.render(processedSql.sqlContent, variables);
 
-            return ProcessedSql.fromTemplateRender(renderedContent, variables)
-                .withAdditionalProcessingStep('template-rendered');
-        } catch (error) {
-            throw new Error(`Template rendering error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        }
+      return ProcessedSql.fromTemplateRender(
+        renderedContent,
+        variables
+      ).withAdditionalProcessingStep('template-rendered');
+    } catch (error) {
+      throw new Error(
+        `Template rendering error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
+    }
+  }
+
+  public validateVariables(variables: Record<string, any>): void {
+    if (!variables || Object.keys(variables).length === 0) {
+      throw new Error('Template variables cannot be empty');
     }
 
-    public validateVariables(variables: Record<string, any>): void {
-        if (!variables || Object.keys(variables).length === 0) {
-            throw new Error('Template variables cannot be empty');
-        }
-
-        try {
-            JSON.stringify(variables);
-        } catch (error) {
-            throw new Error('Variables must be JSON serializable');
-        }
+    try {
+      JSON.stringify(variables);
+    } catch (error) {
+      throw new Error('Variables must be JSON serializable');
     }
-} 
+  }
+}

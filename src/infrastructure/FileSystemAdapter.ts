@@ -5,16 +5,16 @@ import { injectable } from 'tsyringe';
 
 @injectable()
 export class VsCodeFileSystemAdapter implements FileSystemAdapter {
-    public readFile(path: string): string {
-        return fs.readFileSync(path, 'utf8');
-    }
+  public readFile(path: string): string {
+    return fs.readFileSync(path, 'utf8');
+  }
 
-    public exists(path: string): boolean {
-        return fs.existsSync(path);
-    }
+  public exists(path: string): boolean {
+    return fs.existsSync(path);
+  }
 
-    public getWorkspaceRoot(): string {
-        const workspaceFolders = vscode.workspace.workspaceFolders;
-        return workspaceFolders?.[0]?.uri.fsPath || '';
-    }
-} 
+  public getWorkspaceRoot(): string {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    return workspaceFolders?.[0]?.uri.fsPath || '';
+  }
+}
