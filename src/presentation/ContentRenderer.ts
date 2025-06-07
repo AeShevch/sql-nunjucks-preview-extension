@@ -1,6 +1,8 @@
 import * as path from 'path';
 import { ContentRenderer, PreviewOptions } from '../types';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class HtmlContentRenderer implements ContentRenderer {
     renderPreview(sql: string, fileName: string, options: PreviewOptions): string {
         const variablesSection = options.variables ? `

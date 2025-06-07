@@ -1,12 +1,14 @@
-import * as vscode from "vscode";
-import { SqlNunjucksPreviewExtension } from "./SqlNunjucksPreviewExtension";
+import "reflect-metadata";
+import * as vscode from 'vscode';
+import { container } from 'tsyringe';
+import { SqlNunjucksPreviewExtension } from './SqlNunjucksPreviewExtension';
 
-const extension = new SqlNunjucksPreviewExtension();
+const extension = container.resolve(SqlNunjucksPreviewExtension);
 
 export function activate(context: vscode.ExtensionContext): void {
-  extension.activate(context);
+    extension.activate(context);
 }
 
 export function deactivate(): void {
-  extension.deactivate();
+    extension.deactivate();
 }

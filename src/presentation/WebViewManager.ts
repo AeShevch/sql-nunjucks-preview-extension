@@ -1,11 +1,14 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import { WebViewManager, SqlDocument, PreviewOptions, ContentRenderer } from '../types';
+import { injectable, inject } from 'tsyringe';
+import { HtmlContentRenderer } from './ContentRenderer';
 
 export interface WebViewFactory {
     createWebView(title: string): vscode.WebviewPanel;
 }
 
+@injectable()
 export class VsCodeWebViewFactory implements WebViewFactory {
     createWebView(title: string): vscode.WebviewPanel {
         return vscode.window.createWebviewPanel(
@@ -20,13 +23,14 @@ export class VsCodeWebViewFactory implements WebViewFactory {
     }
 }
 
+@injectable()
 export class VsCodeWebViewManager implements WebViewManager {
     private webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
     private updateTimeouts: Map<string, NodeJS.Timeout> = new Map();
 
     constructor(
-        private webViewFactory: WebViewFactory,
-        private contentRenderer: ContentRenderer
+        @inject(VsCodeWebViewFactory) private webViewFactory: WebViewFactory,
+        @inject(HtmlContentRenderer) private contentRenderer: HtmlContentRenderer
     ) {}
 
     showPreview(document: SqlDocument, options: PreviewOptions): void {

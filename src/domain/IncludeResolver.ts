@@ -1,8 +1,11 @@
 import * as path from 'path';
 import { IncludeResolver, FileSystemAdapter } from '../types';
+import { injectable, inject } from 'tsyringe';
+import { VsCodeFileSystemAdapter } from '../infrastructure/FileSystemAdapter';
 
+@injectable()
 export class SqlIncludeResolver implements IncludeResolver {
-    constructor(private fileSystem: FileSystemAdapter) {}
+    constructor(@inject(VsCodeFileSystemAdapter) private fileSystem: VsCodeFileSystemAdapter) {}
 
     resolve(filePath: string, content: string): string {
         const workspaceRoot = this.fileSystem.getWorkspaceRoot();

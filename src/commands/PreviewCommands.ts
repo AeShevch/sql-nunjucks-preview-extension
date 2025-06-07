@@ -1,13 +1,15 @@
 import * as vscode from 'vscode';
 import { SqlDocument } from '../types';
 import { PreviewService } from '../application/PreviewService';
+import { injectable, inject } from 'tsyringe';
 
 export interface Command {
     execute(): Promise<void>;
 }
 
+@injectable()
 export class ShowPreviewCommand implements Command {
-    constructor(private previewService: PreviewService) {}
+    constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
     async execute(): Promise<void> {
         const editor = vscode.window.activeTextEditor;
@@ -32,8 +34,9 @@ export class ShowPreviewCommand implements Command {
     }
 }
 
+@injectable()
 export class ShowFullRenderCommand implements Command {
-    constructor(private previewService: PreviewService) {}
+    constructor(@inject(PreviewService) private previewService: PreviewService) {}
 
     async execute(): Promise<void> {
         const editor = vscode.window.activeTextEditor;
@@ -58,6 +61,7 @@ export class ShowFullRenderCommand implements Command {
     }
 }
 
+@injectable()
 export class CommandRegistry {
     private commands: Map<string, Command> = new Map();
 

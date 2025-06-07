@@ -1,12 +1,15 @@
 import { SqlDocument, PreviewOptions, RenderStrategy, VariableProvider } from '../types';
 import { SqlProcessor } from '../domain/SqlProcessor';
 import { VsCodeWebViewManager } from '../presentation/WebViewManager';
+import { injectable, inject } from 'tsyringe';
+import { VsCodeVariableProvider } from '../infrastructure/VsCodeVariableProvider';
 
+@injectable()
 export class PreviewService {
     constructor(
-        private sqlProcessor: SqlProcessor,
-        private webViewManager: VsCodeWebViewManager,
-        private variableProvider: VariableProvider
+        @inject(SqlProcessor) private sqlProcessor: SqlProcessor,
+        @inject(VsCodeWebViewManager) private webViewManager: VsCodeWebViewManager,
+        @inject(VsCodeVariableProvider) private variableProvider: VsCodeVariableProvider
     ) {}
 
     async showPreview(document: SqlDocument): Promise<void> {

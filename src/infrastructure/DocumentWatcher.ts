@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { DocumentWatcher, SqlDocument } from '../types';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class VsCodeDocumentWatcher implements DocumentWatcher {
     private disposable: vscode.Disposable | undefined;
 

@@ -1,6 +1,8 @@
 import * as vscode from 'vscode';
 import { VariableProvider } from '../types';
+import { injectable } from 'tsyringe';
 
+@injectable()
 export class VsCodeVariableProvider implements VariableProvider {
     async getVariables(): Promise<Record<string, any> | undefined> {
         const input = await vscode.window.showInputBox({

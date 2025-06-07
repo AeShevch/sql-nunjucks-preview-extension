@@ -1,4 +1,7 @@
+import { NunjucksTemplateRenderer } from '../infrastructure/NunjucksAdapter';
 import { SqlDocument, RenderResult, RenderStrategy, IncludeResolver, TemplateRenderer } from '../types';
+import { injectable, inject } from 'tsyringe';
+import { SqlIncludeResolver } from './IncludeResolver';
 
 export interface SqlRenderStrategy {
     render(document: SqlDocument, variables?: Record<string, any>): RenderResult;
@@ -40,12 +43,13 @@ export class FullRenderStrategy implements SqlRenderStrategy {
     }
 }
 
+@injectable()
 export class SqlProcessor {
     private strategies: Map<RenderStrategy, SqlRenderStrategy> = new Map();
 
     constructor(
-        includeResolver: IncludeResolver,
-        templateRenderer: TemplateRenderer
+        @inject(SqlIncludeResolver) includeResolver: SqlIncludeResolver,
+        @inject(NunjucksTemplateRenderer) templateRenderer: NunjucksTemplateRenderer
     ) {
         this.strategies.set(RenderStrategy.INCLUDE_ONLY, new IncludeOnlyStrategy(includeResolver));
         this.strategies.set(RenderStrategy.FULL_RENDER, new FullRenderStrategy(includeResolver, templateRenderer));
