@@ -12,11 +12,19 @@ export class NunjucksTemplateRenderer implements TemplateRenderer {
 
   public render(template: string, variables: Record<string, any>): string {
     try {
-      return this.env.renderString(template, variables);
+      const processedTemplate = this.unescapeQuotesInTemplate(template);
+      
+      return this.env.renderString(processedTemplate, variables);
     } catch (error) {
       throw new Error(
         `Template rendering error: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
+  }
+
+  private unescapeQuotesInTemplate(template: string): string {
+    return template
+      .replace(/'\\'([^']*)\\''/g, "'$1'")
+      .replace(/"\\"([^"]*)\\"/g, '"$1"');
   }
 }

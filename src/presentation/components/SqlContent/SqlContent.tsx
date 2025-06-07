@@ -13,8 +13,17 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
 
+  const unescapeQuotes = (content: string): string => {
+    return content
+      .replace(/\\'/g, "'")           // \' -> '
+      .replace(/\\"/g, '"')           // \" -> "
+      .replace(/''/g, "'");           // '' -> '
+  };
+
+  const displayContent = unescapeQuotes(sqlContent);
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(sqlContent);
+    navigator.clipboard.writeText(displayContent);
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
@@ -22,12 +31,12 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   };
 
   useEffect(() => {
-    if (codeRef.current && sqlContent) {
-      codeRef.current.innerHTML = sqlContent;
+    if (codeRef.current && displayContent) {
+      codeRef.current.innerHTML = displayContent;
       hljs.highlightElement(codeRef.current);
 
       if (containerRef.current) {
-        const lines = sqlContent.split('\n');
+        const lines = displayContent.split('\n');
         const lineNumbersHtml = lines
           .map((_, index) => `<span class="line-number">${index + 1}</span>`)
           .join('');
@@ -38,7 +47,7 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
         }
       }
     }
-  }, [sqlContent]);
+  }, [displayContent]);
 
   return (
     <Box>
@@ -106,7 +115,7 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
             m={0}
           >
             <code ref={codeRef} className="language-sql hljs">
-              {sqlContent}
+              {displayContent}
             </code>
           </Box>
         </Box>

@@ -7,6 +7,7 @@ export class NunjucksVariableParser implements VariableParser {
     const variables: Record<string, any> = {};
     const variableNames = new Set<string>();
     const loopIterators = new Set<string>();
+    const arrayVariables = new Set<string>();
 
     const loopIteratorRegex = /{%\s*for\s+(\w+)\s+in\s+\w+/g;
     let match;
@@ -43,10 +44,24 @@ export class NunjucksVariableParser implements VariableParser {
       const fullPath = match[1];
       const rootVariable = fullPath.split('.')[0];
       variableNames.add(rootVariable);
+      arrayVariables.add(rootVariable);
+    }
+
+    const lengthCheckRegex = /(\w+)\.length/g;
+    while ((match = lengthCheckRegex.exec(sqlContent)) !== null) {
+      const varName = match[1];
+      if (!loopIterators.has(varName)) {
+        variableNames.add(varName);
+        arrayVariables.add(varName);
+      }
     }
 
     variableNames.forEach(name => {
-      variables[name] = "";
+      if (arrayVariables.has(name)) {
+        variables[name] = [];
+      } else {
+        variables[name] = "";
+      }
     });
 
     return variables;
