@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { DocumentWatcher, SqlDocument } from '@types';
+import { DocumentWatcher } from '@infrastructure/types';
+import { SqlDocument } from '@domain/entities/types';
 import { injectable } from 'tsyringe';
 
 @injectable()

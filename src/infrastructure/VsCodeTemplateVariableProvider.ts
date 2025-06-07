@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { TemplateVariableProvider } from '@application/SqlPreviewApplicationService';
+import { TemplateVariableProvider } from '@application/types';
 
 export class VsCodeTemplateVariableProvider implements TemplateVariableProvider {
   public async getVariables(): Promise<Record<string, any> | undefined> {

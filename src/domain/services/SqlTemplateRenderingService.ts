@@ -1,8 +1,5 @@
 import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
-
-export interface TemplateEngine {
-  render(template: string, variables: Record<string, any>): string;
-}
+import { TemplateEngine } from '@domain/services/types';
 
 export class SqlTemplateRenderingService {
   constructor(private readonly templateEngine: TemplateEngine) {}

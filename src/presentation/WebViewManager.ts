@@ -1,12 +1,9 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { WebViewManager, SqlDocument, PreviewOptions } from '@types';
+import { WebViewManager, PreviewOptions, WebViewFactory } from '@presentation/types';
+import { SqlDocument } from '@domain/entities/types';
 import { inject, singleton } from 'tsyringe';
 import { HtmlContentRenderer } from '@presentation/ContentRenderer';
-
-export interface WebViewFactory {
-  createWebView(title: string): vscode.WebviewPanel;
-}
 
 @singleton()
 export class VsCodeWebViewFactory implements WebViewFactory {

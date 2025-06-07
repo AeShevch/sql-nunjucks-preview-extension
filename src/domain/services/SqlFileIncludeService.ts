@@ -1,12 +1,7 @@
 import * as path from 'path';
 import { SqlDocument } from '@domain/entities/SqlDocument';
 import { ProcessedSql } from '@domain/value-objects/ProcessedSql';
-
-export interface SqlFileRepository {
-  readFile(filePath: string): string;
-  exists(filePath: string): boolean;
-  getWorkspaceRoot(): string;
-}
+import { SqlFileRepository } from '@domain/services/types';
 
 export class SqlFileIncludeService {
   constructor(private readonly fileRepository: SqlFileRepository) {}

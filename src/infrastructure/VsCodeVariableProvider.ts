@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { VariableProvider } from '@types';
+import { VariableProvider } from '@infrastructure/types';
 import { injectable } from 'tsyringe';
 
 @injectable()

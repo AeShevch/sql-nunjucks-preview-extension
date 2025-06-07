@@ -1,4 +1,6 @@
-import { SqlDocument, PreviewOptions, RenderStrategy, VariableProvider } from '@types';
+import { SqlDocument } from '@domain/entities/types';
+import { PreviewOptions } from '@presentation/types';
+import { RenderStrategy } from '@domain/types';
 import { SqlProcessor } from '@domain/SqlProcessor';
 import { VsCodeWebViewManager } from '@presentation/WebViewManager';
 import { inject, singleton } from 'tsyringe';

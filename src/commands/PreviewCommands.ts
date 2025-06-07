@@ -1,11 +1,8 @@
 import * as vscode from 'vscode';
-import { SqlDocument } from '@types';
+import { SqlDocument } from '@domain/entities/types';
 import { PreviewService } from '@application/PreviewService';
 import { injectable, inject } from 'tsyringe';
-
-export interface Command {
-  execute(): Promise<void>;
-}
+import { Command } from '@commands/types';
 
 @injectable()
 export class ShowPreviewCommand implements Command {

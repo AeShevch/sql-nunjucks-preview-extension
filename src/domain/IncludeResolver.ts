@@ -1,5 +1,6 @@
 import * as path from 'path';
-import { IncludeResolver, FileSystemAdapter } from '@types';
+import { IncludeResolver } from '@domain/types';
+import { FileSystemAdapter } from '@infrastructure/types';
 import { injectable, inject } from 'tsyringe';
 import { VsCodeFileSystemAdapter } from '@infrastructure/FileSystemAdapter';
 

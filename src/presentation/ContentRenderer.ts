@@ -1,4 +1,4 @@
-import { ContentRenderer, PreviewOptions } from '@types';
+import { ContentRenderer, PreviewOptions } from '@presentation/types';
 import { singleton } from 'tsyringe';
 
 @singleton()
