@@ -1,0 +1,95 @@
+{
+  "name": "sql-nunjucks-preview",
+  "displayName": "SQL Nunjucks Preview",
+  "description": "Preview SQL files with Nunjucks templates, showing resolved includes and rendered output",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:sql"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqlNunjucksPreview.showPreview",
+        "title": "Show SQL Preview (includes only)",
+        "category": "SQL Nunjucks",
+        "icon": "$(preview)"
+      },
+      {
+        "command": "sqlNunjucksPreview.showFullRender",
+        "title": "Show SQL Full Render",
+        "category": "SQL Nunjucks",
+        "icon": "$(file-code)"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .sql",
+          "command": "sqlNunjucksPreview.showPreview",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .sql",
+          "command": "sqlNunjucksPreview.showFullRender",
+          "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "resourceExtname == .sql",
+          "command": "sqlNunjucksPreview.showPreview",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .sql",
+          "command": "sqlNunjucksPreview.showFullRender",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "sqlNunjucksPreview.showPreview",
+        "key": "ctrl+shift+v",
+        "mac": "cmd+shift+v",
+        "when": "editorTextFocus && resourceExtname == .sql"
+      },
+      {
+        "command": "sqlNunjucksPreview.showFullRender",
+        "key": "ctrl+shift+f",
+        "mac": "cmd+shift+f",
+        "when": "editorTextFocus && resourceExtname == .sql"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.3",
+    "@types/node": "18.x",
+    "@types/nunjucks": "^3.2.6",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.52.0",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "nunjucks": "^3.2.4"
+  }
+}
