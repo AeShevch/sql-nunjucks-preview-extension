@@ -1,11 +1,12 @@
 import React from 'react';
+import { Flash } from '@primer/react';
 import { ErrorDisplayProps } from '@presentation/components/ErrorDisplay/types';
 
 export const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ error }) => {
   return (
-    <div className="error">
-      <h2>❌ SQL Processing Error</h2>
-      <p>{error}</p>
-    </div>
+    <Flash variant="danger" sx={{ m: 3 }}>
+      <strong>Error: </strong>
+      {error}
+    </Flash>
   );
 }; 

@@ -78,7 +78,8 @@ export class VsCodeWebViewManager implements WebViewManager {
     options: PreviewOptions
   ): void {
     const fileName = path.basename(document.fileName);
-    panel.webview.html = this.contentRenderer.renderPreview(document.content, fileName, options);
+    const html = this.contentRenderer.renderPreview(document.content, fileName, options);
+    panel.webview.html = html;
   }
 
   private performUpdatePreview(document: SqlDocument, options: PreviewOptions): void {

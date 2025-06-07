@@ -109,8 +109,14 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "@wooorm/starry-night": "^3.8.0",
+    "@preact/compat": "^18.3.1",
+    "@primer/react": "^37.25.0",
+    "@types/prismjs": "^1.26.5",
+    "highlight.js": "^11.11.1",
+    "highlightjs-line-numbers.js": "^2.9.0",
     "nunjucks": "^3.2.4",
+    "preact": "^10.26.8",
+    "prismjs": "^1.30.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"
   }

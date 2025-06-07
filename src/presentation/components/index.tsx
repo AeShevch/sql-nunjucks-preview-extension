@@ -1,8 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { App, AppProps } from '@presentation/components/App';
+import { App, AppProps } from './App';
 
-// Функция для рендеринга React приложения
 export function renderReactApp(containerId: string, props: AppProps): void {
   const container = document.getElementById(containerId);
   if (!container) {
@@ -14,7 +13,6 @@ export function renderReactApp(containerId: string, props: AppProps): void {
   root.render(<App {...props} />);
 }
 
-// Глобальный доступ для вызова из HTML
 declare global {
   interface Window {
     renderSqlPreview: (props: AppProps) => void;

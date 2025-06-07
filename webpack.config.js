@@ -71,6 +71,15 @@ const reactConfig = {
       type: 'umd',
     },
   },
+  plugins: [
+    new (require('webpack')).DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+      'process': JSON.stringify({
+        env: { NODE_ENV: 'production' },
+        browser: true
+      })
+    })
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
     alias: {
@@ -80,7 +89,10 @@ const reactConfig = {
       '@infrastructure': path.resolve(__dirname, 'src/infrastructure'),
       '@commands': path.resolve(__dirname, 'src/commands'),
       '@presentation': path.resolve(__dirname, 'src/presentation'),
-      '@types': path.resolve(__dirname, 'src/types')
+      '@types': path.resolve(__dirname, 'src/types'),
+      // Preact aliases
+      'react': 'preact/compat',
+      'react-dom': 'preact/compat'
     }
   },
   module: {

@@ -1,123 +1,95 @@
-import React from 'react';
-import { SqlContentProps, SqlToken } from '@presentation/components/SqlContent/types';
+import React, { useEffect, useRef } from 'react';
+import { Box, Text } from '@primer/react';
+import hljs from 'highlight.js/lib/core';
+import sql from 'highlight.js/lib/languages/sql';
+import 'highlight.js/styles/github-dark.css';
+import { SqlContentProps } from '@presentation/components/SqlContent/types';
 
-export const SqlContent: React.FC<SqlContentProps> = ({ sql }) => {
-  const highlightSql = (sqlText: string): SqlToken[] => {
-    const tokens: SqlToken[] = [];
-    let currentIndex = 0;
-    let tokenId = 0;
+hljs.registerLanguage('sql', sql);
 
-    // Паттерны для различных типов токенов
-    const patterns = [
-      {
-        type: 'comment' as const,
-        regex: /\/\*[\s\S]*?\*\//g,
-      },
-      {
-        type: 'string' as const,
-        regex: /'(?:[^'\\]|\\.)*'/g,
-      },
-      {
-        type: 'keyword' as const,
-        regex: /\b(SELECT|FROM|WHERE|JOIN|LEFT|RIGHT|INNER|OUTER|ON|GROUP BY|ORDER BY|HAVING|UNION|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|INDEX|TABLE|DATABASE|IF|ELSE|CASE|WHEN|THEN|END|AS|AND|OR|NOT|IN|EXISTS|BETWEEN|LIKE|IS|NULL|COUNT|SUM|AVG|MIN|MAX|DISTINCT|LIMIT|OFFSET)\b/gi,
-      },
-    ];
+export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
+  const codeRef = useRef<HTMLElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-    // Находим все совпадения для всех паттернов
-    const allMatches: Array<{
-      type: 'keyword' | 'comment' | 'string';
-      match: RegExpMatchArray;
-      index: number;
-    }> = [];
+  useEffect(() => {
+    if (codeRef.current && sqlContent) {
+      codeRef.current.innerHTML = sqlContent;
+      hljs.highlightElement(codeRef.current);
 
-    patterns.forEach(pattern => {
-      let match;
-      const regex = new RegExp(pattern.regex.source, pattern.regex.flags);
-      while ((match = regex.exec(sqlText)) !== null) {
-        if (match.index !== undefined) {
-          allMatches.push({
-            type: pattern.type,
-            match,
-            index: match.index,
-          });
+      if (containerRef.current) {
+        const lines = sqlContent.split('\n');
+        const lineNumbersHtml = lines
+          .map((_, index) => `<span class="line-number">${index + 1}</span>`)
+          .join('');
+        
+        const lineNumbersDiv = containerRef.current.querySelector('.line-numbers');
+        if (lineNumbersDiv) {
+          lineNumbersDiv.innerHTML = lineNumbersHtml;
         }
       }
-    });
-
-    // Сортируем по позиции
-    allMatches.sort((a, b) => a.index - b.index);
-
-    // Обрабатываем токены
-    allMatches.forEach(({ type, match, index }) => {
-      // Добавляем текст до текущего совпадения
-      if (index > currentIndex) {
-        const textBefore = sqlText.slice(currentIndex, index);
-        if (textBefore) {
-          tokens.push({
-            type: 'text',
-            content: textBefore,
-            key: `token-${tokenId++}`,
-          });
-        }
-      }
-
-      // Добавляем само совпадение
-      tokens.push({
-        type,
-        content: match[0],
-        key: `token-${tokenId++}`,
-      });
-
-      currentIndex = index + match[0].length;
-    });
-
-    // Добавляем оставшийся текст
-    if (currentIndex < sqlText.length) {
-      const remainingText = sqlText.slice(currentIndex);
-      if (remainingText) {
-        tokens.push({
-          type: 'text',
-          content: remainingText,
-          key: `token-${tokenId++}`,
-        });
-      }
     }
-
-    return tokens;
-  };
-
-  const tokens = highlightSql(sql);
-
-  const renderToken = (token: SqlToken) => {
-    const className = `sql-${token.type}`;
-    
-    switch (token.type) {
-      case 'keyword':
-        return (
-          <span key={token.key} className={className}>
-            {token.content}
-          </span>
-        );
-      case 'comment':
-        return (
-          <span key={token.key} className={className}>
-            {token.content}
-          </span>
-        );
-      case 'string':
-        return (
-          <span key={token.key} className={className}>
-            {token.content}
-          </span>
-        );
-      default:
-        return <span key={token.key}>{token.content}</span>;
-    }
-  };
+  }, [sqlContent]);
 
   return (
-    <div className="sql-content">
-      {tokens.map(renderToken)}
-    </div>
+    <Box>
+      <Box
+        bg="canvas.subtle"
+        borderBottom="1px solid"
+        borderColor="border.default"
+        px={3}
+        py={2}
+      >
+        <Text fontSize={1} fontWeight="semibold" color="fg.muted">
+          SQL
+        </Text>
+      </Box>
+      <Box p={3} bg="canvas.default">
+        <Box
+          ref={containerRef}
+          border="1px solid"
+          borderColor="border.default"
+          borderRadius={2}
+          overflow="hidden"
+          bg="canvas.subtle"
+          sx={{
+            display: 'flex',
+            '& .line-numbers': {
+              minWidth: '40px',
+              padding: '12px 8px 12px 12px',
+              backgroundColor: 'canvas.default',
+              borderRight: '1px solid',
+              borderRightColor: 'border.default',
+              color: 'fg.muted',
+              fontSize: 1,
+              lineHeight: '1.45',
+              fontFamily: 'mono',
+              textAlign: 'right',
+              userSelect: 'none',
+              '& .line-number': {
+                display: 'block',
+              }
+            },
+            '& .code-content': {
+              flex: 1,
+              overflow: 'auto',
+            }
+          }}
+        >
+          <div className="line-numbers"></div>
+          <Box
+            className="code-content"
+            as="pre"
+            fontSize={1}
+            lineHeight="1.45"
+            fontFamily="mono"
+            m={0}
+          >
+            <code ref={codeRef} className="language-sql hljs">
+              {sqlContent}
+            </code>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }; 
