@@ -14,30 +14,28 @@ export class NunjucksVariableParser implements VariableParser {
       loopIterators.add(match[1]);
     }
 
-    const simpleVariableRegex = /{{\s*(\w+)\s*}}/g;
-    while ((match = simpleVariableRegex.exec(sqlContent)) !== null) {
-      const variableName = match[1];
-      if (!loopIterators.has(variableName)) {
-        variableNames.add(variableName);
-      }
+    const allVariablesRegex = /{{\s*([^}]+)\s*}}/g;
+    while ((match = allVariablesRegex.exec(sqlContent)) !== null) {
+      const expression = match[1];
+      const foundVars = this.extractVariablesFromExpression(expression);
+      
+      foundVars.forEach(varName => {
+        if (!loopIterators.has(varName)) {
+          variableNames.add(varName);
+        }
+      });
     }
 
-    const dotNotationRegex = /{{\s*(\w+(?:\.\w+)*)\s*}}/g;
-    while ((match = dotNotationRegex.exec(sqlContent)) !== null) {
-      const fullPath = match[1];
-      const rootVariable = fullPath.split('.')[0];
-      if (!loopIterators.has(rootVariable)) {
-        variableNames.add(rootVariable);
-      }
-    }
-
-    const conditionalRegex = /{%\s*(?:if|elif)\s+(\w+(?:\.\w+)*)/g;
+    const conditionalRegex = /{%\s*(?:if|elif)\s+([^%]+)%}/g;
     while ((match = conditionalRegex.exec(sqlContent)) !== null) {
-      const fullPath = match[1];
-      const rootVariable = fullPath.split('.')[0];
-      if (!loopIterators.has(rootVariable)) {
-        variableNames.add(rootVariable);
-      }
+      const condition = match[1].trim();
+      const foundVars = this.extractVariablesFromExpression(condition);
+      
+      foundVars.forEach(varName => {
+        if (!loopIterators.has(varName)) {
+          variableNames.add(varName);
+        }
+      });
     }
 
     const loopRegex = /{%\s*for\s+\w+\s+in\s+(\w+(?:\.\w+)*)/g;
@@ -47,20 +45,46 @@ export class NunjucksVariableParser implements VariableParser {
       variableNames.add(rootVariable);
     }
 
-    const filterRegex = /{{\s*(\w+(?:\.\w+)*)\s*\|/g;
-    while ((match = filterRegex.exec(sqlContent)) !== null) {
-      const fullPath = match[1];
-      const rootVariable = fullPath.split('.')[0];
-      if (!loopIterators.has(rootVariable)) {
-        variableNames.add(rootVariable);
-      }
-    }
-
     variableNames.forEach(name => {
       variables[name] = "";
     });
 
     return variables;
+  }
+
+  private extractVariablesFromExpression(expression: string): string[] {
+    const variables: string[] = [];
+    
+    const cleanExpression = expression
+      .replace(/'[^']*'/g, '')
+      .replace(/"[^"]*"/g, '')
+      .replace(/\b\d+\.?\d*\b/g, '')
+      .replace(/\b(true|false|null|undefined)\b/g, '');
+
+    const variableRegex = /\b([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*)\b/g;
+    let match;
+    
+    while ((match = variableRegex.exec(cleanExpression)) !== null) {
+      const fullPath = match[1];
+      const rootVariable = fullPath.split('.')[0];
+      
+      if (!this.isNunjucksKeyword(rootVariable)) {
+        variables.push(rootVariable);
+      }
+    }
+
+    return [...new Set(variables)];
+  }
+
+  private isNunjucksKeyword(word: string): boolean {
+    const keywords = [
+      'and', 'or', 'not', 'in', 'is', 'if', 'else', 'elif', 'endif',
+      'for', 'endfor', 'set', 'endset', 'block', 'endblock', 'extends',
+      'include', 'import', 'from', 'as', 'with', 'without', 'context',
+      'loop', 'super', 'self', 'varargs', 'kwargs', 'caller'
+    ];
+    
+    return keywords.includes(word.toLowerCase());
   }
 
   public validateVariableNames(variables: Record<string, any>): boolean {
