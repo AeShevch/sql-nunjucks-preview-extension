@@ -2,7 +2,7 @@
   "name": "sql-nunjucks-preview",
   "displayName": "SQL Nunjucks Preview",
   "description": "Preview SQL files with Nunjucks templates, showing resolved includes and rendered output with interactive variable editing",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "AleksandrShevchenko",
   "author": {
     "name": "Aleksandr Shevchenko",
@@ -143,12 +143,10 @@
     "@preact/compat": "^18.3.1",
     "@primer/react": "^37.25.0",
     "@sqltools/formatter": "^1.2.5",
-    "@types/prismjs": "^1.26.5",
     "highlight.js": "^11.11.1",
     "highlightjs-line-numbers.js": "^2.9.0",
     "nunjucks": "^3.2.4",
     "preact": "^10.26.8",
-    "prismjs": "^1.30.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.10.0"
   }
