@@ -23,6 +23,8 @@ export class NunjucksTemplateRenderer implements TemplateRenderer {
   }
 
   private unescapeQuotesInTemplate(template: string): string {
-    return template.replace(/'\\'([^']*)\\''/g, "'$1'").replace(/"\\"([^"]*)\\"/g, '"$1"');
+    return template
+      .replace(/'\\'(.+?)\\''/g, "'$1'")
+      .replace(/"\\"(.+?)\\"/g, '"$1"');
   }
 }

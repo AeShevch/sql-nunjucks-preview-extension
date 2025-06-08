@@ -23,8 +23,7 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   const unescapeQuotes = (content: string): string => {
     return content
       .replace(/\\'/g, "'")
-      .replace(/\\"/g, '"')
-      .replace(/''/g, "'");
+      .replace(/\\"/g, '"');
   };
 
   const beautifySQL = (sql: string): string => {
