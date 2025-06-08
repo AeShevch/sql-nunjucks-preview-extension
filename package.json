@@ -2,7 +2,7 @@
   "name": "sql-nunjucks-preview",
   "displayName": "SQL Nunjucks Preview",
   "description": "Preview SQL files with Nunjucks templates, showing resolved includes and rendered output with interactive variable editing",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "AleksandrShevchenko",
   "author": {
     "name": "Aleksandr Shevchenko",
