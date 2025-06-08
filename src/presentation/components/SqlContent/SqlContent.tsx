@@ -3,6 +3,7 @@ import { Box, Button, ButtonGroup, IconButton, Text } from '@primer/react';
 import hljs from 'highlight.js/lib/core';
 import sql from 'highlight.js/lib/languages/sql';
 import 'highlight.js/styles/github-dark.css';
+import sqlFormatter from '@sqltools/formatter';
 import { SqlContentProps } from '@presentation/components/SqlContent/types';
 import { CopyIcon, SparklesFillIcon, TrackedByClosedNotPlannedIcon } from '@primer/octicons-react';
 
@@ -12,17 +13,66 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   const codeRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
-  const [isBeautified, setIsBeautified] = useState(false);
-  const [isCommentsShown, setIsCommentsShown] = useState(true);
+  const [isBeautified, setIsBeautified] = useState(() => {
+    return localStorage.getItem('sqlContent.isBeautified') === 'true';
+  });
+  const [isCommentsShown, setIsCommentsShown] = useState(() => {
+    return localStorage.getItem('sqlContent.isCommentsShown') !== 'false';
+  });
 
   const unescapeQuotes = (content: string): string => {
     return content
-      .replace(/\\'/g, "'") // \' -> '
-      .replace(/\\"/g, '"') // \" -> "
-      .replace(/''/g, "'"); // '' -> '
+      .replace(/\\'/g, "'")
+      .replace(/\\"/g, '"')
+      .replace(/''/g, "'");
   };
 
-  const displayContent = unescapeQuotes(sqlContent);
+  const beautifySQL = (sql: string): string => {
+    try {
+      return sqlFormatter.format(sql, {
+        language: 'sql',
+        indent: '  ',
+        reservedWordCase: 'upper',
+        linesBetweenQueries: 1,
+      });
+    } catch (error) {
+      console.warn('SQL formatting failed:', error);
+      return sql;
+    }
+  };
+
+  const hideComments = (content: string): string => {
+    return content
+      .split('\n')
+      .filter(line => {
+        const trimmedLine = line.trim();
+        return !trimmedLine.includes('=== INCLUDED FROM') && 
+               !trimmedLine.includes('===INCLUDED FROM') &&
+               !trimmedLine.includes('=== END INCLUDE:') &&
+               !trimmedLine.includes('===END INCLUDE:') &&
+               !trimmedLine.match(/^--.*=== INCLUDED FROM/i) &&
+               !trimmedLine.match(/^\/\*.*=== INCLUDED FROM/i) &&
+               !trimmedLine.match(/^--.*=== END INCLUDE:/i) &&
+               !trimmedLine.match(/^\/\*.*=== END INCLUDE:/i);
+      })
+      .join('\n');
+  };
+
+  const processContent = (content: string): string => {
+    let processed = unescapeQuotes(content);
+    
+    if (!isCommentsShown) {
+      processed = hideComments(processed);
+    }
+    
+    if (isBeautified) {
+      processed = beautifySQL(processed);
+    }
+    
+    return processed;
+  };
+
+  const displayContent = processContent(sqlContent);
 
   const handleCopyClick = () => {
     navigator.clipboard.writeText(displayContent);
@@ -33,16 +83,23 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   };
 
   const handleBeautifyClick = () => {
-    setIsBeautified(!isBeautified);
+    const newValue = !isBeautified;
+    setIsBeautified(newValue);
+    localStorage.setItem('sqlContent.isBeautified', newValue.toString());
   };
 
   const handleCommentsToggleClick = () => {
-    setIsCommentsShown(!isCommentsShown);
+    const newValue = !isCommentsShown;
+    setIsCommentsShown(newValue);
+    localStorage.setItem('sqlContent.isCommentsShown', newValue.toString());
   };
 
   useEffect(() => {
     if (codeRef.current && displayContent) {
-      codeRef.current.innerHTML = displayContent;
+      codeRef.current.removeAttribute('data-highlighted');
+      codeRef.current.className = 'language-sql hljs';
+      
+      codeRef.current.textContent = displayContent;
       hljs.highlightElement(codeRef.current);
 
       if (containerRef.current) {
@@ -57,7 +114,7 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
         }
       }
     }
-  }, [displayContent]);
+  }, [displayContent, isBeautified, isCommentsShown]);
 
   return (
     <Box>
