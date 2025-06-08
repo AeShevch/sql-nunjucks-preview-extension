@@ -3,7 +3,10 @@ import { ProcessedSql } from '@domain/value-objects/ProcessedSql/ProcessedSql';
 import { PreviewConfiguration } from '@domain/value-objects/PreviewConfiguration/PreviewConfiguration';
 import { SqlFileIncludeService } from '@domain/services/SqlFileIncludeService/SqlFileIncludeService';
 import { SqlTemplateRenderingService } from '@domain/services/SqlTemplateRenderingService/SqlTemplateRenderingService';
-import { PreviewDisplayPort, TemplateVariableProvider } from '@application/SqlPreviewApplicationService/types';
+import {
+  PreviewDisplayPort,
+  TemplateVariableProvider,
+} from '@application/SqlPreviewApplicationService/types';
 
 export class SqlPreviewApplicationService {
   constructor(

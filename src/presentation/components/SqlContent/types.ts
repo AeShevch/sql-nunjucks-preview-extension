@@ -6,4 +6,4 @@ export interface SqlToken {
   type: 'keyword' | 'comment' | 'string' | 'text';
   content: string;
   key: string;
-} 
+}

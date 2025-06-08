@@ -10,10 +10,10 @@ export const SqlPreview: React.FC<SqlPreviewProps> = ({
   sql,
   isFullRender,
   variables,
-  onVariablesChange
+  onVariablesChange,
 }) => {
   return (
-    <Box 
+    <Box
       border="1px solid"
       borderColor="border.default"
       borderRadius={2}
@@ -22,8 +22,8 @@ export const SqlPreview: React.FC<SqlPreviewProps> = ({
     >
       <Header fileName={fileName} isFullRender={isFullRender} />
       {isFullRender && (
-        <VariablesSection 
-          variables={variables} 
+        <VariablesSection
+          variables={variables}
           onVariablesChange={onVariablesChange}
           isEditable={true}
         />
@@ -31,4 +31,4 @@ export const SqlPreview: React.FC<SqlPreviewProps> = ({
       <SqlContent sql={sql} />
     </Box>
   );
-}; 
+};

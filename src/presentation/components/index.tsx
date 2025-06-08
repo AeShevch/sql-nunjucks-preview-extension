@@ -1,5 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
+// eslint-disable-next-line no-restricted-imports
 import { App, AppProps } from './App';
 
 export function renderReactApp(containerId: string, props: AppProps): void {
@@ -21,4 +22,4 @@ declare global {
 
 window.renderSqlPreview = (props: AppProps) => {
   renderReactApp('react-root', props);
-}; 
+};

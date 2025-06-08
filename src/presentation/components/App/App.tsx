@@ -17,13 +17,13 @@ export const App: React.FC<AppProps> = ({ type, data }) => {
     if (window.vscode) {
       window.vscode.postMessage({
         type: 'variablesChanged',
-        variables: variables
+        variables: variables,
       });
     }
   }, []);
 
   return (
-    <ThemeProvider colorMode="dark">
+    <ThemeProvider colorMode="night">
       <BaseStyles>
         {type === 'error' ? (
           <ErrorDisplay error={data.error || 'Unknown error'} />
@@ -39,4 +39,4 @@ export const App: React.FC<AppProps> = ({ type, data }) => {
       </BaseStyles>
     </ThemeProvider>
   );
-}; 
+};

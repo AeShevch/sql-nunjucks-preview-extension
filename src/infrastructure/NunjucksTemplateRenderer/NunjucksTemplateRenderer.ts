@@ -13,7 +13,7 @@ export class NunjucksTemplateRenderer implements TemplateRenderer {
   public render(template: string, variables: Record<string, any>): string {
     try {
       const processedTemplate = this.unescapeQuotesInTemplate(template);
-      
+
       return this.env.renderString(processedTemplate, variables);
     } catch (error) {
       throw new Error(
@@ -23,8 +23,6 @@ export class NunjucksTemplateRenderer implements TemplateRenderer {
   }
 
   private unescapeQuotesInTemplate(template: string): string {
-    return template
-      .replace(/'\\'([^']*)\\''/g, "'$1'")
-      .replace(/"\\"([^"]*)\\"/g, '"$1"');
+    return template.replace(/'\\'([^']*)\\''/g, "'$1'").replace(/"\\"([^"]*)\\"/g, '"$1"');
   }
 }

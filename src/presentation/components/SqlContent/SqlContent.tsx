@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button, IconButton, Text } from '@primer/react';
+import { Box, Button, ButtonGroup, IconButton, Text } from '@primer/react';
 import hljs from 'highlight.js/lib/core';
 import sql from 'highlight.js/lib/languages/sql';
 import 'highlight.js/styles/github-dark.css';
 import { SqlContentProps } from '@presentation/components/SqlContent/types';
-import {CopyIcon} from '@primer/octicons-react'
+import { CopyIcon, SparklesFillIcon, TrackedByClosedNotPlannedIcon } from '@primer/octicons-react';
 
 hljs.registerLanguage('sql', sql);
 
@@ -12,22 +12,32 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
   const codeRef = useRef<HTMLElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isCopied, setIsCopied] = useState(false);
+  const [isBeautified, setIsBeautified] = useState(false);
+  const [isCommentsShown, setIsCommentsShown] = useState(true);
 
   const unescapeQuotes = (content: string): string => {
     return content
-      .replace(/\\'/g, "'")           // \' -> '
-      .replace(/\\"/g, '"')           // \" -> "
-      .replace(/''/g, "'");           // '' -> '
+      .replace(/\\'/g, "'") // \' -> '
+      .replace(/\\"/g, '"') // \" -> "
+      .replace(/''/g, "'"); // '' -> '
   };
 
   const displayContent = unescapeQuotes(sqlContent);
 
-  const handleCopy = () => {
+  const handleCopyClick = () => {
     navigator.clipboard.writeText(displayContent);
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
     }, 2000);
+  };
+
+  const handleBeautifyClick = () => {
+    setIsBeautified(!isBeautified);
+  };
+
+  const handleCommentsToggleClick = () => {
+    setIsCommentsShown(!isCommentsShown);
   };
 
   useEffect(() => {
@@ -40,7 +50,7 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
         const lineNumbersHtml = lines
           .map((_, index) => `<span class="line-number">${index + 1}</span>`)
           .join('');
-        
+
         const lineNumbersDiv = containerRef.current.querySelector('.line-numbers');
         if (lineNumbersDiv) {
           lineNumbersDiv.innerHTML = lineNumbersHtml;
@@ -64,14 +74,47 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
         <Text fontSize={1} fontWeight="semibold" color="fg.muted">
           SQL
         </Text>
-        <IconButton 
-            style={{ backgroundColor: '#212830', borderColor: '#3d444d', color: '#9198a1' }} 
-            size="small" 
-            onClick={handleCopy} 
-            aria-label={isCopied ? 'Copied' : 'Copy to clipboard'} 
-            icon={CopyIcon} 
-            tooltipDirection='n'
-        />
+        <ButtonGroup>
+          <IconButton
+            style={{
+              backgroundColor: '#212830',
+              borderColor: '#3d444d',
+              color: isBeautified ? '#fff' : '#9198a1',
+            }}
+            size="small"
+            icon={SparklesFillIcon}
+            tooltipDirection="n"
+            aria-label={isBeautified ? 'Unbeautify SQL' : 'Beautify SQL'}
+            onClick={handleBeautifyClick}
+          />
+
+          <IconButton
+            style={{
+              backgroundColor: '#212830',
+              borderColor: '#3d444d',
+              color: !isCommentsShown ? '#fff' : '#9198a1',
+            }}
+            size="small"
+            icon={TrackedByClosedNotPlannedIcon}
+            tooltipDirection="n"
+            aria-label={isCommentsShown ? 'Hide comments' : 'Show comments'}
+            onClick={handleCommentsToggleClick}
+          />
+
+          <IconButton
+            style={{
+              backgroundColor: '#212830',
+              borderColor: '#3d444d',
+              color: isCopied ? '#fff' : '#9198a1',
+            }}
+            className="ml-2"
+            size="small"
+            onClick={handleCopyClick}
+            aria-label={isCopied ? 'Copied' : 'Copy to clipboard'}
+            icon={CopyIcon}
+            tooltipDirection="n"
+          />
+        </ButtonGroup>
       </Box>
       <Box p={3} bg="canvas.default">
         <Box
@@ -97,12 +140,12 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
               userSelect: 'none',
               '& .line-number': {
                 display: 'block',
-              }
+              },
             },
             '& .code-content': {
               flex: 1,
               overflow: 'auto',
-            }
+            },
           }}
         >
           <div className="line-numbers"></div>
@@ -122,4 +165,4 @@ export const SqlContent: React.FC<SqlContentProps> = ({ sql: sqlContent }) => {
       </Box>
     </Box>
   );
-}; 
+};

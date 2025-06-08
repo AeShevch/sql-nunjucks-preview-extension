@@ -19,7 +19,7 @@ export class NunjucksVariableParser implements VariableParser {
     while ((match = allVariablesRegex.exec(sqlContent)) !== null) {
       const expression = match[1];
       const foundVars = this.extractVariablesFromExpression(expression);
-      
+
       foundVars.forEach(varName => {
         if (!loopIterators.has(varName)) {
           variableNames.add(varName);
@@ -31,7 +31,7 @@ export class NunjucksVariableParser implements VariableParser {
     while ((match = conditionalRegex.exec(sqlContent)) !== null) {
       const condition = match[1].trim();
       const foundVars = this.extractVariablesFromExpression(condition);
-      
+
       foundVars.forEach(varName => {
         if (!loopIterators.has(varName)) {
           variableNames.add(varName);
@@ -60,7 +60,7 @@ export class NunjucksVariableParser implements VariableParser {
       if (arrayVariables.has(name)) {
         variables[name] = [];
       } else {
-        variables[name] = "";
+        variables[name] = '';
       }
     });
 
@@ -69,7 +69,7 @@ export class NunjucksVariableParser implements VariableParser {
 
   private extractVariablesFromExpression(expression: string): string[] {
     const variables: string[] = [];
-    
+
     const cleanExpression = expression
       .replace(/'[^']*'/g, '')
       .replace(/"[^"]*"/g, '')
@@ -78,11 +78,11 @@ export class NunjucksVariableParser implements VariableParser {
 
     const variableRegex = /\b([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z_][a-zA-Z0-9_]*)*)\b/g;
     let match;
-    
+
     while ((match = variableRegex.exec(cleanExpression)) !== null) {
       const fullPath = match[1];
       const rootVariable = fullPath.split('.')[0];
-      
+
       if (!this.isNunjucksKeyword(rootVariable)) {
         variables.push(rootVariable);
       }
@@ -93,18 +93,43 @@ export class NunjucksVariableParser implements VariableParser {
 
   private isNunjucksKeyword(word: string): boolean {
     const keywords = [
-      'and', 'or', 'not', 'in', 'is', 'if', 'else', 'elif', 'endif',
-      'for', 'endfor', 'set', 'endset', 'block', 'endblock', 'extends',
-      'include', 'import', 'from', 'as', 'with', 'without', 'context',
-      'loop', 'super', 'self', 'varargs', 'kwargs', 'caller'
+      'and',
+      'or',
+      'not',
+      'in',
+      'is',
+      'if',
+      'else',
+      'elif',
+      'endif',
+      'for',
+      'endfor',
+      'set',
+      'endset',
+      'block',
+      'endblock',
+      'extends',
+      'include',
+      'import',
+      'from',
+      'as',
+      'with',
+      'without',
+      'context',
+      'loop',
+      'super',
+      'self',
+      'varargs',
+      'kwargs',
+      'caller',
     ];
-    
+
     return keywords.includes(word.toLowerCase());
   }
 
   public validateVariableNames(variables: Record<string, any>): boolean {
     const validNameRegex = /^[a-zA-Z_][a-zA-Z0-9_]*$/;
-    
+
     return Object.keys(variables).every(name => validNameRegex.test(name));
   }
-} 
+}

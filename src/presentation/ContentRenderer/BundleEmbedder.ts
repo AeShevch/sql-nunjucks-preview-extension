@@ -15,7 +15,7 @@ export class BundleEmbedder {
 
     try {
       const bundlePath = path.join(__dirname, 'react-bundle.js');
-      
+
       if (fs.existsSync(bundlePath)) {
         this.bundleCache = fs.readFileSync(bundlePath, 'utf8');
         return this.bundleCache;
@@ -29,4 +29,4 @@ export class BundleEmbedder {
   public static clearCache(): void {
     this.bundleCache = null;
   }
-} 
+}

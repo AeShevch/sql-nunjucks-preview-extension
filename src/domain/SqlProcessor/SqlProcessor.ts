@@ -1,9 +1,5 @@
 import { NunjucksTemplateRenderer } from '@/infrastructure/NunjucksTemplateRenderer/NunjucksTemplateRenderer';
-import {
-  SqlRenderStrategy,
-  RenderResult,
-  RenderStrategy,
-} from '@domain/SqlProcessor/types';
+import { SqlRenderStrategy, RenderResult, RenderStrategy } from '@domain/SqlProcessor/types';
 import { IncludeResolver, TemplateRenderer } from '@domain/IncludeResolver/types';
 import { SqlDocument } from '@domain/entities/SqlDocument/types';
 import { injectable, inject } from 'tsyringe';

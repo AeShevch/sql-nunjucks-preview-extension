@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Text, TextInput, Button } from '@primer/react';
+import { Box, Text, TextInput, Button, IconButton } from '@primer/react';
 import { VariablesSectionProps } from '@presentation/components/VariablesSection/types';
+import { PencilIcon } from '@primer/octicons-react';
 
-export const VariablesSection: React.FC<VariablesSectionProps> = ({ 
-  variables = {}, 
+export const VariablesSection: React.FC<VariablesSectionProps> = ({
+  variables = {},
   onVariablesChange,
-  isEditable = true 
+  isEditable = true,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -41,19 +42,23 @@ export const VariablesSection: React.FC<VariablesSectionProps> = ({
         borderColor="border.default"
         px={3}
         py={2}
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center' 
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}
       >
         <Text fontSize={1} fontWeight="semibold" color="fg.muted">
           Template variables
         </Text>
         {isEditable && !isEditing && (
-          <Button size="small" onClick={handleStartEdit} style={{ backgroundColor: '#212830', borderColor: '#3d444d' }} >
-            Edit
-          </Button>
+          <IconButton
+            size="small"
+            onClick={handleStartEdit}
+            style={{ backgroundColor: '#212830', borderColor: '#3d444d' }}
+            icon={PencilIcon}
+            aria-label="Edit"
+          />
         )}
       </Box>
       <Box p={3} bg="canvas.default">
@@ -63,13 +68,13 @@ export const VariablesSection: React.FC<VariablesSectionProps> = ({
               <TextInput
                 as="textarea"
                 value={editValue}
-                onChange={(e) => setEditValue(e.target.value)}
+                onChange={e => setEditValue(e.target.value)}
                 sx={{
                   width: '100%',
                   minHeight: '150px',
                   fontFamily: 'mono',
                   fontSize: 1,
-                  resize: 'vertical'
+                  resize: 'vertical',
                 }}
                 placeholder='{"key": "value"}'
               />
@@ -103,12 +108,10 @@ export const VariablesSection: React.FC<VariablesSectionProps> = ({
             overflow="auto"
             fontFamily="mono"
           >
-            <code>
-              {JSON.stringify(variables, null, 2)}
-            </code>
+            <code>{JSON.stringify(variables, null, 2)}</code>
           </Box>
         )}
       </Box>
     </Box>
   );
-}; 
+};

@@ -36,7 +36,7 @@ export class PreviewService {
 
   public async showFullRender(document: SqlDocument): Promise<void> {
     const includeResult = this.sqlProcessor.process(document, RenderStrategy.INCLUDE_ONLY);
-    
+
     if (includeResult.error) {
       const options: PreviewOptions = { isFullRender: true, variables: {} };
       this.webViewManager.showPreview(document, options);
@@ -53,16 +53,27 @@ export class PreviewService {
 
     this.webViewManager.showPreview(document, options);
 
-    const fullRenderResult = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, extractedVariables);
+    const fullRenderResult = this.sqlProcessor.process(
+      document,
+      RenderStrategy.FULL_RENDER,
+      extractedVariables
+    );
 
     if (fullRenderResult.error) {
       this.webViewManager.updatePanelWithError(document, options, fullRenderResult.error);
     } else {
-      this.webViewManager.updatePanelWithProcessedContent(document, options, fullRenderResult.content);
+      this.webViewManager.updatePanelWithProcessedContent(
+        document,
+        options,
+        fullRenderResult.content
+      );
     }
   }
 
-  private updateFullRenderWithVariables(document: SqlDocument, variables: Record<string, any>): void {
+  private updateFullRenderWithVariables(
+    document: SqlDocument,
+    variables: Record<string, any>
+  ): void {
     const options: PreviewOptions = {
       isFullRender: true,
       variables,
@@ -94,18 +105,21 @@ export class PreviewService {
     this.updateFullRenderIfExists(document, simpleResult);
   }
 
-  private updateFullRenderIfExists(document: SqlDocument, includeResult: { content: string; error?: string }): void {
+  private updateFullRenderIfExists(
+    document: SqlDocument,
+    includeResult: { content: string; error?: string }
+  ): void {
     if (includeResult.error) {
       return;
     }
 
     const storedVariables = this.webViewManager.getStoredVariables(document);
-    
+
     let variablesToUse: Record<string, any>;
-    
+
     if (storedVariables) {
       const extractedVariables = this.variableParser.extractVariables(includeResult.content);
-      
+
       variablesToUse = { ...extractedVariables };
       Object.keys(storedVariables).forEach(key => {
         if (key in variablesToUse) {
@@ -115,18 +129,26 @@ export class PreviewService {
     } else {
       return;
     }
-    
+
     const fullRenderOptions: PreviewOptions = {
       isFullRender: true,
       variables: variablesToUse,
     };
 
-    const fullRenderResult = this.sqlProcessor.process(document, RenderStrategy.FULL_RENDER, variablesToUse);
+    const fullRenderResult = this.sqlProcessor.process(
+      document,
+      RenderStrategy.FULL_RENDER,
+      variablesToUse
+    );
 
     if (fullRenderResult.error) {
       this.webViewManager.updatePanelWithError(document, fullRenderOptions, fullRenderResult.error);
     } else {
-      this.webViewManager.updatePanelWithProcessedContent(document, fullRenderOptions, fullRenderResult.content);
+      this.webViewManager.updatePanelWithProcessedContent(
+        document,
+        fullRenderOptions,
+        fullRenderResult.content
+      );
     }
   }
 

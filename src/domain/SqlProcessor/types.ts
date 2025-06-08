@@ -13,4 +13,4 @@ export interface RenderResult {
   content: string;
   variables?: Record<string, any>;
   error?: string;
-} 
+}

@@ -10,25 +10,30 @@ import { VsCodeWebViewFactory } from '@presentation/WebViewManager/WebViewFactor
 export class VsCodeWebViewManager implements WebViewManager {
   private webviewPanels: Map<string, vscode.WebviewPanel> = new Map();
   private updateTimeouts: Map<string, NodeJS.Timeout> = new Map();
-  private variablesChangedCallback?: (document: SqlDocument, variables: Record<string, any>) => void;
+  private variablesChangedCallback?: (
+    document: SqlDocument,
+    variables: Record<string, any>
+  ) => void;
 
   constructor(
     @inject(VsCodeWebViewFactory) private webViewFactory: WebViewFactory,
     @inject(ReactContentRenderer) private contentRenderer: ReactContentRenderer
   ) {}
 
-  public setVariablesChangedCallback(callback: (document: SqlDocument, variables: Record<string, any>) => void): void {
+  public setVariablesChangedCallback(
+    callback: (document: SqlDocument, variables: Record<string, any>) => void
+  ): void {
     this.variablesChangedCallback = callback;
   }
 
   public getStoredVariables(document: SqlDocument): Record<string, any> | undefined {
     const fullRenderKey = `${document.fileName}-full`;
     const fullPanel = this.webviewPanels.get(fullRenderKey);
-    
+
     if (fullPanel) {
       return (fullPanel as any)._storedVariables;
     }
-    
+
     return undefined;
   }
 
@@ -44,7 +49,7 @@ export class VsCodeWebViewManager implements WebViewManager {
     const title = this.generateTitle(document, options);
     panel = this.webViewFactory.createWebView(title);
 
-    panel.webview.onDidReceiveMessage((message) => {
+    panel.webview.onDidReceiveMessage(message => {
       if (message.type === 'variablesChanged' && this.variablesChangedCallback) {
         this.variablesChangedCallback(document, message.variables);
       }

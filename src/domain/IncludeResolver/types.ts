@@ -4,4 +4,4 @@ export interface IncludeResolver {
 
 export interface TemplateRenderer {
   render(template: string, variables: Record<string, any>): string;
-} 
+}

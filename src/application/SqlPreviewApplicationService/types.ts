@@ -19,4 +19,4 @@ export interface PreviewDisplayPort {
 
 export interface TemplateVariableProvider {
   getVariables(): Promise<Record<string, any> | undefined>;
-} 
+}

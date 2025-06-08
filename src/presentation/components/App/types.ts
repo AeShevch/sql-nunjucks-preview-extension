@@ -7,4 +7,4 @@ export interface AppProps {
     variables?: Record<string, any>;
     error?: string;
   };
-} 
+}
